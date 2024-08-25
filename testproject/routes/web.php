@@ -1,8 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\PropertyController;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,14 +31,63 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
 Route::group(['prefix'=>'user','as'=>'user.'], function(){
-Route::get('/register', [RegisterController::class, 'show'])->name('register');
+Route::get('/register', [RegisterController::class, 'show'])->name('register.form');
 Route::post('/create', [RegisterController::class, 'register'])->name('create');
+Route::get('/login', [LoginController::class, 'show'])->name('login.form');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 });
 
-// Route::get('/register', [RegisterController::class, 'create']);
+Route::get('password/reset', function () {
+    return view('auth.passwords.email');
+})->name('password.request');
 
-// Route::prefix('/user');
-// Route::get('/register', [RegisterController::class, 'show'])->name('register.form');
-// Route::post('/create', [RegisterController::class, 'register'])->name('user.register');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+Route::get('password/reset/{token}', function ($token) {
+    return view('auth.passwords.reset', ['token' => $token]);
+})->name('password.reset');
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+ 
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+ 
+    return redirect('/home');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+// Route::post('/forgot-password/{token}', [ForgotPasswordController::class, 'reset']);
+
+Route::post('/logout', [LogoutController::class, 'logout'])->middleware('auth')->name('logout');
+
+Route::group(['prefix'=>'company','as'=>'company.'], function(){
+    Route::get('/create', [CompanyController::class, 'create'])->name('form');
+    Route::post('/create', [CompanyController::class, 'store'])->name('store');
+    Route::get('/index', [CompanyController::class, 'index'])->name('list');
+    Route::post('/delete', [CompanyController::class, 'destroy'])->name('destroy');
+    Route::post('/update', [CompanyController::class, 'update'])->name('update');
+    Route::get('/properties/{company}', [CompanyController::class, 'show'])->name('show');
+    // Route::post('/login', [CompanyController::class, 'login'])->name('login');
+    });
+
+Route::group(['prefix'=>'property','as'=>'property.'], function(){
+    Route::get('/create', [PropertyController::class, 'create'])->name('form');
+    Route::post('/create', [PropertyController::class, 'store'])->name('store');
+    Route::get('/index', [PropertyController::class, 'index'])->name('list');
+    Route::post('/delete', [PropertyController::class, 'destroy'])->name('destroy');
+    Route::post('/update', [PropertyController::class, 'update'])->name('update');
+    // Route::post('/login', [CompanyController::class, 'login'])->name('login');
+    });
 

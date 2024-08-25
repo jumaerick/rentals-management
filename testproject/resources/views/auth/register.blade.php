@@ -10,10 +10,6 @@
 </ul>
 @endif --}}
 
-@if(Session::has('message'))
-<p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-@endif
-
 <div class="container">
     <div class="row justify-content-center">
     <h2>
