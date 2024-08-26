@@ -25,7 +25,6 @@ class CompanyController extends Controller
      public function properties($id){
 
         $properties = Company::find($id)->property;
-        dd(Company::find($id)->property->room);
         // foreach ($properties as $property){
 
         //     dd($property->room);

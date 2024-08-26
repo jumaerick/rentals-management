@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\Property;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use App\Http\Requests\RentRequest;
 
 class RentController extends Controller
 {
@@ -37,9 +38,11 @@ class RentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RentRequest $request)
     {
         //
+        $rent = Rent::create($request->validated());
+        return back()->with('message', 'Company added successfully');
     }
 
     /**

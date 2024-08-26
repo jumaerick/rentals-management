@@ -32,8 +32,8 @@ class RentRequest extends FormRequest
                     return $query->where('property_code', $this->property_code); // or $this->house_id
                 }),
             ],
-            'amount'=>'required|float',
-            'deposit'=>'required|float',
+            'amount'=>'required|numeric',
+            'deposit'=>'required|numeric',
             'year' => 'required|integer|digits:4', // Ensures year is exactly 4 digits
             'month' => 'required|integer|between:1,12',
         ];

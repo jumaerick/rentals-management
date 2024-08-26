@@ -22,6 +22,19 @@ class PropertyController extends Controller
          return view('property.create')->with(['companies'=>$companies]);
      }
 
+
+     public function rooms($id){
+
+        $rooms = Property::find($id)->room;
+        // foreach ($properties as $property){
+
+        //     dd($property->room);
+        // }
+
+        return response()->json($rooms);
+     }
+
+
     public function index()
     {
         //

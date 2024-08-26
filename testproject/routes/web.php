@@ -92,6 +92,7 @@ Route::group(['prefix' => 'property', 'as' => 'property.'], function () {
     Route::post('/delete', [PropertyController::class, 'destroy'])->name('destroy');
     Route::get('/{property}', [PropertyController::class, 'show'])->name('show');
     Route::post('/update', [PropertyController::class, 'update'])->name('update');
+    Route::get('/rooms/{property}', [PropertyController::class, 'rooms'])->name('rooms');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
 

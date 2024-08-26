@@ -37,7 +37,7 @@
 
             <option value="" selected disabled>Select Property</option>
             @foreach ($properties as $property)
-                <option value="{{ $property->property_code }}">{{ $property->name }}</option>
+                <option value="{{ $property->id }}">{{ $property->name }}</option>
             @endforeach
         </select>
         @if ($errors->has('property_code'))
@@ -78,7 +78,7 @@
 
     <div class="form-group">
         <label for="amount">Amount</label>
-        <input type="text" name="room_code" id="amount" value="{{ old('amount') }}" class="form-control">
+        <input type="text" name="amount" id="amount" value="{{ old('amount') }}" class="form-control">
         @if ($errors->has('amount'))
             <span class="help-block text-danger">
                 <strong>{{ $errors->first('amount') }}</strong>
@@ -143,18 +143,7 @@
 
                         $.each(data, function(key, property) {
                             $('select[name="property_code"]').append(
-                                '<option value="' + property.property_code + '">' + property.name +
-                                '</option>');
-                        
-                        });
-
-                        $('#room_code').empty();
-                        $('#room_code').append(
-                            '<option hidden>Select Room</option>');
-
-                        $.each(data, function(key, property) {
-                            $('select[name="property_code"]').append(
-                                '<option value="' + property.property_code + '">' + property.name +
+                                '<option value="' + property.id + '">' + property.name +
                                 '</option>');
                         
                         });
@@ -165,5 +154,41 @@
                 }
             });
         });
+
+        $('#property_code').change(function() {
+            var property = $('#property_code').val();
+            var updateRoute = "{{ route('property.rooms', ':id') }}";
+            updateRoute = updateRoute.replace(':id', property);
+
+
+            $.ajax({
+                url: updateRoute,
+                type: "GET",
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data) {
+                        console.log(data);
+                        $('#room_code').empty();
+                        $('#room_code').append(
+                            '<option hidden>Select Room</option>');
+
+                        $.each(data, function(key, room) {
+
+                            $('select[name="room_code"]').append(
+                                '<option value="' + room.room_code + '">' + room.room_code +
+                                '</option>');
+                        
+                        });
+
+                    } else {
+                        $('#property_code').empty();
+                    }
+                }
+            });
+        });
+        
     });
 </script>
