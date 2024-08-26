@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -47,6 +47,20 @@ class User extends Authenticatable
 {
     $this->attributes['password'] = Hash::make($value);
 }
+
+public function profile(){
+    return $this->hasOne(Profile::class);
+}
+
+// public static function boot() {
+//     parent::boot();
+
+//     self::created(function ($model) {
+//         $profile = new Profile();
+//         $model->profile()->save($profile);
+//     });
+// }
+
 
 
 }

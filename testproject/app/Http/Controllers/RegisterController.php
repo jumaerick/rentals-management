@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Profile;
+use Illuminate\Auth\Events\Registered;
+
 
 use App\Http\Requests\RegisterRequest;
 
@@ -22,7 +24,9 @@ class RegisterController extends Controller
         // dd($request);
         $user = User::create($request->validated());
         $this->createProfile($user);
-        return redirect('/')->with('message', 'Account created Successfully');
+        event(new Registered($user));
+
+        return view('home')->with('message', 'Account created Successfully');
     }
 
     public function createProfile($user){
