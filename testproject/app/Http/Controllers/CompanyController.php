@@ -21,12 +21,25 @@ class CompanyController extends Controller
          return view('company.create');
      }
 
+
+     public function properties($id){
+
+        $properties = Company::find($id)->property;
+        dd(Company::find($id)->property->room);
+        // foreach ($properties as $property){
+
+        //     dd($property->room);
+        // }
+
+        return response()->json($properties);
+     }
+
     public function index()
     {
         //
         $companies = Company::all();
 
-        return view('company.index')->with(['companies'=>$companies]);
+        return view('company.index')->with(['companies'=>$companies, 'company' =>'All Companies']);
     }
 
     /**

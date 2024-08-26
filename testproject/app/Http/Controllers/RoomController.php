@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Property;
+use App\Models\Room;
 use App\Models\Company;
+use App\Models\Property;
+use App\Http\Requests\RoomRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\PropertyRequest;
 
-class PropertyController extends Controller
+class RoomController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,16 +20,16 @@ class PropertyController extends Controller
      {
          //
          $companies = Company::all();
-         return view('property.create')->with(['companies'=>$companies]);
+         $properties = Property::all();
+         return view('room.create')->with(['companies'=>$companies, 'properties'=>$properties]);
      }
 
     public function index()
     {
         //
         $properties = Property::all();
-        
 
-        return view('property.index')->with(['properties'=>$properties, 'company' =>'All Companies']);
+        return view('room.index')->with(['properties'=>$properties, 'company' =>'All Properties']);
     }
 
     /**
@@ -37,37 +38,33 @@ class PropertyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PropertyRequest $request)
+    public function store(RoomRequest $request)
     {
         //
-        Property::create($request->validated());
-        return back()->with('message', 'Property added successfully');
+        // dd($request);
+        $room = Room::create($request->validated());
+        return back()->with('message', 'Room added successfully');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Property  $property
+     * @param  \App\Models\Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function show(Property $property)
+    public function show(Room $room)
     {
         //
-
-        $rooms = $property->room;
-
-        return view('room.index')->with(['rooms'=>$rooms, 'property'=>$property->name]);
-
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Property  $property
+     * @param  \App\Models\Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Property $property)
+    public function update(Request $request, Room $room)
     {
         //
     }
@@ -75,10 +72,10 @@ class PropertyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Property  $property
+     * @param  \App\Models\Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Property $property)
+    public function destroy(Room $room)
     {
         //
     }

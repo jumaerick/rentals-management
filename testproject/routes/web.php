@@ -9,6 +9,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\RentController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Auth;
@@ -33,11 +35,11 @@ Route::get('/', function () {
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-Route::group(['prefix'=>'user','as'=>'user.'], function(){
-Route::get('/register', [RegisterController::class, 'show'])->name('register.form');
-Route::post('/create', [RegisterController::class, 'register'])->name('create');
-Route::get('/login', [LoginController::class, 'show'])->name('login.form');
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+    Route::get('/register', [RegisterController::class, 'show'])->name('register.form');
+    Route::post('/create', [RegisterController::class, 'register'])->name('create');
+    Route::get('/login', [LoginController::class, 'show'])->name('login.form');
+    Route::post('/login', [LoginController::class, 'login'])->name('login');
 });
 
 Route::get('password/reset', function () {
@@ -56,14 +58,14 @@ Route::get('/email/verify', function () {
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
- 
+
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
- 
+
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
@@ -72,22 +74,42 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 Route::post('/logout', [LogoutController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::group(['prefix'=>'company','as'=>'company.'], function(){
+Route::group(['prefix' => 'company', 'as' => 'company.'], function () {
     Route::get('/create', [CompanyController::class, 'create'])->name('form');
     Route::post('/create', [CompanyController::class, 'store'])->name('store');
     Route::get('/index', [CompanyController::class, 'index'])->name('list');
     Route::post('/delete', [CompanyController::class, 'destroy'])->name('destroy');
     Route::post('/update', [CompanyController::class, 'update'])->name('update');
-    Route::get('/properties/{company}', [CompanyController::class, 'show'])->name('show');
+    Route::get('/{company}', [CompanyController::class, 'show'])->name('show');
+    Route::get('/properties/{company}', [CompanyController::class, 'properties'])->name('properties');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
-    });
+});
 
-Route::group(['prefix'=>'property','as'=>'property.'], function(){
+Route::group(['prefix' => 'property', 'as' => 'property.'], function () {
     Route::get('/create', [PropertyController::class, 'create'])->name('form');
     Route::post('/create', [PropertyController::class, 'store'])->name('store');
     Route::get('/index', [PropertyController::class, 'index'])->name('list');
     Route::post('/delete', [PropertyController::class, 'destroy'])->name('destroy');
+    Route::get('/{property}', [PropertyController::class, 'show'])->name('show');
     Route::post('/update', [PropertyController::class, 'update'])->name('update');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
-    });
+});
 
+Route::group(['prefix' => 'room', 'as' => 'room.'], function () {
+    Route::get('/create', [RoomController::class, 'create'])->name('form');
+    Route::post('/create', [RoomController::class, 'store'])->name('store');
+    Route::get('/index', [RoomController::class, 'index'])->name('list');
+    Route::post('/delete', [RoomController::class, 'destroy'])->name('destroy');
+    Route::post('/update', [RoomController::class, 'update'])->name('update');
+    // Route::post('/login', [CompanyController::class, 'login'])->name('login');
+});
+
+
+Route::group(['prefix' => 'rent', 'as' => 'rent.'], function () {
+    Route::get('/create', [RentController::class, 'create'])->name('form');
+    Route::post('/create', [RentController::class, 'store'])->name('store');
+    Route::get('/index', [RentController::class, 'index'])->name('list');
+    Route::post('/delete', [RentController::class, 'destroy'])->name('destroy');
+    Route::post('/update', [RentController::class, 'update'])->name('update');
+    // Route::post('/login', [CompanyController::class, 'login'])->name('login');
+});
