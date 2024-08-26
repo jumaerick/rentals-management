@@ -22,7 +22,7 @@ class RegisterController extends Controller
         // dd($request);
         $user = User::create($request->validated());
         $this->createProfile($user);
-        return back()->with('message', 'Account created Successfully');
+        return redirect('/')->with('message', 'Account created Successfully');
     }
 
     public function createProfile($user){
