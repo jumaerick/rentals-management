@@ -5,20 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Payment extends Model
 {
     use HasFactory;
 
     public $fillable = [
-        'room_code',
-        'property_id',
+        'room_id',
+        'amount',
+        'payment_method',
+        'transaction_id',
     ];
 
-    public function property(){
-        return $this->belongsTo(Property::class);
-    }
-
     public function rent(){
-        return $this->hasOne(Rent::class);
+        return $this->belongsTo(Rent::class, 'room_id','room_id');
     }
 }

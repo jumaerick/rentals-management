@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Table with Actions</title>
+    <title>User Management</title>
     <!-- Bootstrap CSS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap (optional) -->
@@ -21,36 +21,49 @@
 <body>
 
     <div class="container mt-5">
-        <h2>{{ $property }} Rooms</h2>
+        <h2>All users</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Property Name</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
                     <th>Room Code</th>
+                    <th>Property</th>
                     <th>Actions</th>
 
                 </tr>
             </thead>
             <tbody id="table-body">
-                @foreach ($rooms as $room)
-                    <tr data-id="{{ $room->id }}">
-                        <td> {{ $room->id }}</td>
-                        <td>{{ $room->property->name }}</td>
-                        <td>{{ $room->room_code }}</td>
+                {{-- @php
+    dd($users);
+@endphp --}}
+
+                @foreach ($users as $user)
+                    <tr data-id="{{ $user->id }}">
+                        
+                        <td> {{ $user->id }}</td>
+                        <td> {{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->profile->phone_number ?? '' }}</td> 
+                        <td></td>
+                        <td>{{ $user->profile->location ?? ''}}</td>
+                        {{-- <td>{{ $payment->amount ?? ''}}</td>
+                        <td>{{ $payment->created_at}}</td> --}}
 
                         <td>
                             <div class="table-actions">
-                                <form id="delete-property" action="{{ route('room.destroy') }}" method="POST"
+                                <form id="delete-property" action="{{ route('user.destroy') }}" method="POST"
                                     style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $room->id }}"
+                                    <input type="hidden" name="property-id" value="{{ $user->id }}"
                                         id="property-id">
                                     @csrf
                                 </form>
 
-                                <form id="update-property" action="{{ route('room.update') }}" method="POST"
+                                <form id="update-property" action="{{ route('user.update') }}" method="POST"
                                     style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $room->id }}"
+                                    <input type="hidden" name="property-id" value="{{ $user->id }}"
                                         id="property-id">
                                     @csrf
                                 </form>

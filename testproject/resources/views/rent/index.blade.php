@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Table with Actions</title>
+    <title>Rent Management</title>
     <!-- Bootstrap CSS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap (optional) -->
@@ -28,16 +28,25 @@
                     <th>#</th>
                     <th>Property Name</th>
                     <th>Room Code</th>
+                    <th>Deposit</th>
+                    <th>Rent Amount</th>
+                    <th>Rent Date</th>
                     <th>Actions</th>
 
                 </tr>
             </thead>
             <tbody id="table-body">
+
                 @foreach ($rooms as $room)
                     <tr data-id="{{ $room->id }}">
+
+                        
                         <td> {{ $room->id }}</td>
                         <td>{{ $room->property->name }}</td>
                         <td>{{ $room->room_code }}</td>
+                        <td>{{ $room->rent->deposit ?? '' }}</td>
+                        <td>{{ $room->rent->amount ?? ''}}</td>
+                        <td>{{ $room->rent->rent_date ?? ''}}</td>
 
                         <td>
                             <div class="table-actions">

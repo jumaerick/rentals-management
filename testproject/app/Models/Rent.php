@@ -10,11 +10,18 @@ class Rent extends Model
     use HasFactory;
 
     public $fillable = [
-        'room_code',
-        'property_code',
+        'room_id',
         'amount',
         'deposit',
-        'year',
-        'month',
+        'rent_date',
     ];
+
+    public function room(){
+        return $this->belongsTo(Room::class);
+    }
+
+    public function payment(){
+        return $this->hasMany(Payment::class);
+    }
+    
 }

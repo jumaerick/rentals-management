@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Table with Actions</title>
+    <title>Rent Management</title>
     <!-- Bootstrap CSS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap (optional) -->
@@ -21,36 +21,47 @@
 <body>
 
     <div class="container mt-5">
-        <h2>{{ $property }} Rooms</h2>
+        <h2>{{ $payment }} Payments</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Property Name</th>
                     <th>Room Code</th>
+                    <th>Rent Amount</th>
+                    <th>Amount Paid</th>
+                    <th>Payment Date</th>
                     <th>Actions</th>
 
                 </tr>
             </thead>
             <tbody id="table-body">
-                @foreach ($rooms as $room)
-                    <tr data-id="{{ $room->id }}">
-                        <td> {{ $room->id }}</td>
-                        <td>{{ $room->property->name }}</td>
-                        <td>{{ $room->room_code }}</td>
+
+                @foreach ($payments as $payment)
+                    <tr data-id="{{ $payment->id }}">
+{{-- @php
+    dd($payment);
+@endphp --}}
+                        
+                        <td> {{ $payment->id }}</td>
+                        <td> {{ $payment->rent->room->property->name ?? '' }}</td>
+                        <td>{{ $payment->rent->room->room_code ?? ''}}</td> 
+                        <td>{{ $payment->rent->amount ?? ''}}</td>
+                        <td>{{ $payment->amount ?? ''}}</td>
+                        <td>{{ $payment->created_at}}</td>
 
                         <td>
                             <div class="table-actions">
-                                <form id="delete-property" action="{{ route('room.destroy') }}" method="POST"
+                                <form id="delete-property" action="{{ route('payment.destroy') }}" method="POST"
                                     style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $room->id }}"
+                                    <input type="hidden" name="property-id" value="{{ $payment->id }}"
                                         id="property-id">
                                     @csrf
                                 </form>
 
-                                <form id="update-property" action="{{ route('room.update') }}" method="POST"
+                                <form id="update-property" action="{{ route('payment.update') }}" method="POST"
                                     style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $room->id }}"
+                                    <input type="hidden" name="property-id" value="{{ $payment->id }}"
                                         id="property-id">
                                     @csrf
                                 </form>

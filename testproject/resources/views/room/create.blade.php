@@ -33,11 +33,11 @@
     <div class="form-group">
 
         <label for="name"> Select Property</label>
-        <select name="property_code" id="property_code">
+        <select name="property_id" id="property_id">
 
             <option value="" selected disabled>Select Property</option>
             @foreach ($properties as $property)
-                <option value="{{ $property->property_code }}">{{ $property->name }}</option>
+                <option value="{{ $property->property_id }}">{{ $property->name }}</option>
             @endforeach
         </select>
         @if ($errors->has('property_code'))
@@ -85,17 +85,17 @@
                 success: function(data) {
                     if (data) {
                         console.log(data);
-                        $('#property_code').empty();
-                        $('#property_code').append(
+                        $('#property_id').empty();
+                        $('#property_id').append(
                             '<option hidden>Select Property</option>');
 
                         $.each(data, function(key, property) {
-                            $('select[name="property_code"]').append(
-                                '<option value="' + property.property_code + '">' + property.name +
+                            $('select[name="property_id"]').append(
+                                '<option value="' + property.id + '">' + property.name +
                                 '</option>');
                         });
                     } else {
-                        $('#property_code').empty();
+                        $('#property_id').empty();
                     }
                 }
             });

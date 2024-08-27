@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\HomeController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RentController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +42,10 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::post('/create', [RegisterController::class, 'register'])->name('create');
     Route::get('/login', [LoginController::class, 'show'])->name('login.form');
     Route::post('/login', [LoginController::class, 'login'])->name('login');
+
+    Route::get('/index', [UserController::class, 'index'])->name('list');
+    Route::post('/delete', [UserController::class, 'destroy'])->name('destroy');
+    Route::post('/update', [UserController::class, 'update'])->name('update');
 });
 
 Route::get('password/reset', function () {
@@ -114,3 +120,14 @@ Route::group(['prefix' => 'rent', 'as' => 'rent.'], function () {
     Route::post('/update', [RentController::class, 'update'])->name('update');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
+
+Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
+    Route::get('/create', [PaymentController::class, 'create'])->name('form');
+    Route::post('/create', [PaymentController::class, 'store'])->name('store');
+    Route::get('/index', [PaymentController::class, 'index'])->name('list');
+    Route::post('/delete', [PaymentController::class, 'destroy'])->name('destroy');
+    Route::post('/update', [PaymentController::class, 'update'])->name('update');
+    // Route::post('/login', [CompanyController::class, 'login'])->name('login');
+});
+
+

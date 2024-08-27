@@ -23,7 +23,7 @@ class Property extends Model
     }
 
     public function room(){
-        return $this->hasMany(Room::class, 'property_code', 'property_code');
+        return $this->hasMany(Room::class);
     }
 
 }

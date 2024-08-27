@@ -27,9 +27,11 @@ class RoomController extends Controller
     public function index()
     {
         //
-        $properties = Property::all();
+        $rooms = Room::all();
 
-        return view('room.index')->with(['properties'=>$properties, 'company' =>'All Properties']);
+        // dd($rooms);
+
+        return view('room.index')->with(['rooms'=>$rooms, 'property' =>'All Properties']);
     }
 
     /**

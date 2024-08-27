@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rent;
-use App\Models\Company;
+use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Room;
+use App\Http\Requests\PaymentRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\RentRequest;
 
-class RentController extends Controller
+class PaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,20 +19,17 @@ class RentController extends Controller
     public function create()
     {
         //
-        $companies = Company::all();
         $properties = Property::all();
         $rooms = Room::all();
-        return view('rent.create')->with(['companies' => $companies, 'properties' => $properties, 'rooms'=> $rooms]);
+        return view('payment.create')->with(['properties' => $properties, 'rooms' => $rooms]);
     }
-
 
     public function index()
     {
         //
-        $rooms = Room::with(['rent'])->get();
+        $payments = Payment::with(['rent'])->get();
 
-        // dd($rooms);
-        return view('rent.index')->with(['rooms'=> $rooms, 'property'=>'All properties']);
+        return view('payment.index')->with(['payments'=> $payments, 'payment'=>'All Rent']);
     }
 
     /**
@@ -42,20 +38,21 @@ class RentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(RentRequest $request)
+    public function store(PaymentRequest $request)
     {
         //
-        $rent = Rent::create($request->validated());
-        return back()->with('message', 'Company added successfully');
+        $payment = Payment::create($request->validated());
+        return back()->with('message', 'Payment added successfully');
+
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Rent  $rent
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function show(Rent $rent)
+    public function show(Payment $payment)
     {
         //
     }
@@ -64,10 +61,10 @@ class RentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Rent  $rent
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Rent $rent)
+    public function update(Request $request, Payment $payment)
     {
         //
     }
@@ -75,10 +72,10 @@ class RentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Rent  $rent
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Rent $rent)
+    public function destroy(Payment $payment)
     {
         //
     }

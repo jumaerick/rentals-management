@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class RoomRequest extends FormRequest
+class PaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,15 +24,9 @@ class RoomRequest extends FormRequest
     public function rules()
     {
         return [
-            //
-            'property_id' =>'required',
-            'room_code' => [
-                'required',
-                Rule::unique('rooms')->where(function ($query) {
-                    return $query->where('property_id', $this->property_id); // or $this->house_id
-                }),
-            ]
-            
+            'room_id' => 'required',
+            'amount' => 'required|numeric',
+            // 'payment_method' => 'required',
         ];
     }
 }
