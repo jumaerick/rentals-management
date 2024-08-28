@@ -24,7 +24,7 @@ class RegisterController extends Controller
         // dd($request);
         $user = User::create($request->validated());
         $this->createProfile($user);
-        event(new Registered($user));
+        // event(new Registered($user));
 
         return view('home')->with('message', 'Account created Successfully');
     }

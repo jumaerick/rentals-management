@@ -22,6 +22,19 @@ class PropertyController extends Controller
          return view('property.create')->with(['companies'=>$companies]);
      }
 
+
+     public function rooms($id){
+
+        $rooms = Property::find($id)->room;
+        // foreach ($properties as $property){
+
+        //     dd($property->room);
+        // }
+
+        return response()->json($rooms);
+     }
+
+
     public function index()
     {
         //
@@ -53,6 +66,11 @@ class PropertyController extends Controller
     public function show(Property $property)
     {
         //
+
+        $rooms = $property->room;
+
+        return view('room.index')->with(['rooms'=>$rooms, 'property'=>$property->name]);
+
     }
 
     /**

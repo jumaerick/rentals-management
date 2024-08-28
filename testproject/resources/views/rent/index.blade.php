@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Table with Actions</title>
+    <title>Rent Management</title>
     <!-- Bootstrap CSS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap (optional) -->
@@ -21,45 +21,56 @@
 <body>
 
     <div class="container mt-5">
-        <h2>{{$company}}  Properties</h2>
+        <h2>{{ $property }} Rooms</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Name</th>
-                    <th>Property Code</th>
-                    <th>Company</th>
-                    <th>Location</th>
+                    <th>Property Name</th>
+                    <th>Room Code</th>
+                    <th>Deposit</th>
+                    <th>Rent Amount</th>
+                    <th>Rent Date</th>
                     <th>Actions</th>
-                    
+
                 </tr>
             </thead>
             <tbody id="table-body">
-                @foreach ($properties as $property)
-                <tr data-id="{{$property->id}}">
-                    <td> {{$property->id}}</td>
-                    <td>{{$property->name}}</td>
-                    <td>{{$property->property_code}}</td>
-                    <td>{{$property->company->name}}</td>
-                    <td>{{$property->location}}</td>
-                    <td>
-                        <div class="table-actions">
-                            <form id="delete-property" action="{{ route('property.destroy') }}" method="POST" style="display: none;">
-                                <input type="hidden" name="property-id" value="{{$property->id}}" id="property-id">
-                                @csrf
-                            </form>
 
-                            <form id="update-property" action="{{ route('property.update') }}" method="POST" style="display: none;">
-                                <input type="hidden" name="property-id" value="{{$property->id}}" id="property-id">
-                                @csrf
-                            </form>
-                            <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('property.form') }}'"">Add</button> -->
-                            <button class="btn btn-success btn-sm" onclick="location.href='{{ route('property.show', $property->id)}}'">Rooms Listing</button>
-                            <button class="btn btn-primary btn-sm" onclick="updateproperty()" value="12">Update</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn' value="12">Delete</button>
-                        </div>
-                    </td>
-                    @endforeach
+                @foreach ($rooms as $room)
+                    <tr data-id="{{ $room->id }}">
+
+                        
+                        <td> {{ $room->id }}</td>
+                        <td>{{ $room->property->name }}</td>
+                        <td>{{ $room->room_code }}</td>
+                        <td>{{ $room->rent->deposit ?? '' }}</td>
+                        <td>{{ $room->rent->amount ?? ''}}</td>
+                        <td>{{ $room->rent->rent_date ?? ''}}</td>
+
+                        <td>
+                            <div class="table-actions">
+                                <form id="delete-property" action="{{ route('room.destroy') }}" method="POST"
+                                    style="display: none;">
+                                    <input type="hidden" name="property-id" value="{{ $room->id }}"
+                                        id="property-id">
+                                    @csrf
+                                </form>
+
+                                <form id="update-property" action="{{ route('room.update') }}" method="POST"
+                                    style="display: none;">
+                                    <input type="hidden" name="property-id" value="{{ $room->id }}"
+                                        id="property-id">
+                                    @csrf
+                                </form>
+                                <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('room.form') }}'"">Add</button> -->
+                                <button class="btn btn-primary btn-sm" onclick="updateproperty()"
+                                    value="12">Update</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn'
+                                    value="12">Delete</button>
+                            </div>
+                        </td>
+                @endforeach
                 </tr>
 
                 <!-- More rows as needed -->
@@ -80,7 +91,7 @@
 
 
             if (newName !== '') {
-                var updateRoute = "{{route('property.update')}}";
+                var updateRoute = "{{ route('property.update') }}";
                 var token = $('meta[name="csrf-token"]').attr('content');
 
 
@@ -118,7 +129,7 @@
                 // const row = button.closest('tr');
                 // row.remove();
 
-                var deleteRoute = "{{route('property.destroy')}}";
+                var deleteRoute = "{{ route('property.destroy') }}";
                 var token = $('meta[name="csrf-token"]').attr('content');
 
                 var itemId = '';
