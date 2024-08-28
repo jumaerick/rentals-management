@@ -54,6 +54,7 @@
                                 @csrf
                             </form>
                             <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('property.form') }}'"">Add</button> -->
+                            <button class="btn btn-success btn-sm" onclick="">Rooms Listing</button>
                             <button class="btn btn-primary btn-sm" onclick="updateproperty()" value="12">Update</button>
                             <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn' value="12">Delete</button>
                         </div>

@@ -85,6 +85,9 @@ class CompanyController extends Controller
     public function destroy(Request $request)
     {
 
+        // $company = Company::where('id', $request->id)->first();
+        
+        // dd($company->property);
         Company::destroy($request->id);
         return response()->json(['success' => true]);
     }
