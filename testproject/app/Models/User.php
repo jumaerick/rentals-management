@@ -52,6 +52,10 @@ public function profile(){
     return $this->hasOne(Profile::class);
 }
 
+public function roomAssignment(){
+    return $this->hasMany(RoomAssignment::class);
+}
+
 // public static function boot() {
 //     parent::boot();
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\RoomAssignmentController;
 use App\Http\Controllers\RentController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Auth\Events\Login;
@@ -127,6 +128,15 @@ Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
     Route::get('/index', [PaymentController::class, 'index'])->name('list');
     Route::post('/delete', [PaymentController::class, 'destroy'])->name('destroy');
     Route::post('/update', [PaymentController::class, 'update'])->name('update');
+    // Route::post('/login', [CompanyController::class, 'login'])->name('login');
+});
+
+Route::group(['prefix' => 'roomAssignment', 'as' => 'roomAssignment.'], function () {
+    Route::get('/create', [RoomAssignmentController::class, 'create'])->name('form');
+    Route::post('/create', [RoomAssignmentController::class, 'store'])->name('store');
+    Route::get('/index', [RoomAssignmentController::class, 'index'])->name('list');
+    Route::post('/delete', [RoomAssignmentController::class, 'destroy'])->name('destroy');
+    Route::post('/update', [RoomAssignmentController::class, 'update'])->name('update');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
 
