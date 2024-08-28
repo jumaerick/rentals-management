@@ -21,4 +21,8 @@ class Room extends Model
     public function rent(){
         return $this->hasOne(Rent::class);
     }
+
+    public function payment(){
+        return $this->hasMany(Payment::class, 'room_id', 'room_id');
+    }
 }

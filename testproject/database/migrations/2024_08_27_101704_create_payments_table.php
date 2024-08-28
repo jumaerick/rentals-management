@@ -18,7 +18,8 @@ class CreatePaymentsTable extends Migration
             $table->integer('room_id');
             $table->integer('payment_method')->nullable();  
             $table->string('transaction_id')->nullable();
-            $table->string('amount');         
+            $table->string('amount');    
+            $table->integer('user_id');     
             $table->timestamps();
         });
     }

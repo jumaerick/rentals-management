@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use App\Models\Company;
+use App\Models\RoomAssignment;
+use App\Models\Room;
 use Illuminate\Http\Request;
 use App\Http\Requests\PropertyRequest;
 
@@ -25,7 +27,10 @@ class PropertyController extends Controller
 
      public function rooms($id){
 
-        $rooms = Property::find($id)->room;
+        $rooms = Room::where('property_id', $id)->whereNotIn('id', RoomAssignment::all()->pluck('room_id')->toArray())->get();
+        // $rooms = Property::find($id)->room;
+
+        // dd($rooms);
         // foreach ($properties as $property){
 
         //     dd($property->room);
