@@ -17,6 +17,7 @@ class CreateRoomsAssignmentsTable extends Migration
             $table->id();
             $table->integer('room_id');
             $table->integer('user_id');
+            $table->integer('status')->default(0);            
             $table->timestamps();
         });
     }

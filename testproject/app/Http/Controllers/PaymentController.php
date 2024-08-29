@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Payment;
 use App\Models\Property;
 use App\Models\Room;
+use App\Models\User;
 use App\Http\Requests\PaymentRequest;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,8 @@ class PaymentController extends Controller
         //
         $properties = Property::all();
         $rooms = Room::all();
-        return view('payment.create')->with(['properties' => $properties, 'rooms' => $rooms]);
+        $users = User::all();
+        return view('payment.create')->with(['properties' => $properties, 'rooms' => $rooms, 'users'=> $users]);
     }
 
     public function index()

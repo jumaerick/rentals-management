@@ -56,6 +56,10 @@ public function roomAssignment(){
     return $this->hasMany(RoomAssignment::class);
 }
 
+public function payment(){
+    return $this->hasMany(Payment::class, 'user_id',);
+}
+
 // public static function boot() {
 //     parent::boot();
 

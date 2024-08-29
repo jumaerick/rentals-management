@@ -43,7 +43,7 @@
                         <td> {{ $roomAssignment->user->email }}</td>
                         <td>{{ $roomAssignment->room->property->name }}</td>
                         <td>{{ $roomAssignment->room->room_code }}</td>
-                        <td>Ksh. {{ array_sum($roomAssignment->room->rent->payment->pluck('amount')->toArray()) ?? '' }}</td>
+                        <td>Ksh. {{ array_sum($roomAssignment->user->payment->pluck('amount')->toArray()) }}</td>
                         <td>{{ $roomAssignment->created_at }}</td>
 
                         <td>
@@ -62,8 +62,14 @@
                                     @csrf
                                 </form>
                                 <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('room.form') }}'"">Add</button> -->
+                                
+                                @if($roomAssignment->status =='1')
                                 <button class="btn btn-primary btn-sm" onclick="updateproperty()"
-                                    value="12">Update</button>
+                                    value="12">Unassign</button>
+                                @else
+                                <button class="btn btn-primary btn-sm" onclick="updateproperty()"
+                                    value="12">Assign</button>
+                                @endif
                                 <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn'
                                     value="12">Delete</button>
                             </div>
@@ -85,11 +91,9 @@
             // const name = row.cells[1].innerText;
 
             // Simple prompt to update values, you can use a more complex form if needed
-            const newName = prompt('Update name:', name);
+            if (confirm('Are you sure you want to approve this request?')) {
 
-
-            if (newName !== '') {
-                var updateRoute = "{{ route('property.update') }}";
+                var updateRoute = "{{ route('roomAssignment.changeStatus') }}";
                 var token = $('meta[name="csrf-token"]').attr('content');
 
 
@@ -102,21 +106,24 @@
                         method: 'post',
                         data: {
                             _token: token,
-                            id: itemId,
-                            newName: newName
+                            id: itemId
                         },
-                        success: function() {
+                        success: function(response) {
 
-                            setTimeout(
-                                location.reload(), 100
-                            )
+                            if (response.status == true){
+                                alert ('approved');
+
+                            }
+                            else {
+                                alert ('Something went wrong')
+                            }
                         }
                     });
 
                 });
 
-
             }
+
         }
 
 

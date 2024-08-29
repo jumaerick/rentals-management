@@ -6,9 +6,11 @@ use App\Models\RoomAssignment;
 use App\Models\Property;
 use App\Models\Room;
 use App\Models\User;
+use App\Models\Rent;
 use App\Models\Payment;
 use App\Http\Requests\RoomAssignmentRequest;
 use Illuminate\Http\Request;
+use DB;
 
 class RoomAssignmentController extends Controller
 {
@@ -22,8 +24,7 @@ class RoomAssignmentController extends Controller
     {
         //
         $properties = Property::all();
-        $rooms = Room::whereNotIn('id', RoomAssignment::all()->pluck('room_id')->toArray())->get();
-
+        $rooms = Room::whereNotIn('id', RoomAssignment::where('status', 1)->pluck('room_id')->toArray())->get();
         $users = User::all();
         return view('roomAssignment.create')->with(['properties' => $properties, 'rooms' => $rooms, 'users' => $users]);
     }
@@ -31,7 +32,11 @@ class RoomAssignmentController extends Controller
     public function index()
     {
         //
-        $roomAssignments = RoomAssignment::all();
+        $roomAssignments = RoomAssignment::with(['room'])::select('user_id', DB::raw('SUM(amount) as total_amount'))
+        ->groupBy('user_id')
+        ->get();
+
+        dd($roomAssignments);
         return view('roomAssignment.index')->with(['roomAssignments' => $roomAssignments]);
     }
 
@@ -44,15 +49,39 @@ class RoomAssignmentController extends Controller
     public function store(RoomAssignmentRequest $request)
     {
         //
-        // dd($request->validated()['user_id']);
+        // dd($request);
         $userRequest = $request->validated();
-        $payments = Payment::where('user_id', $userRequest['user_id'])->where('room_id', $userRequest['room_id'])->get();
-        dd($payments);
-        
         $roomAssignment = RoomAssignment::create($request->validated());
 
+        return back()->with('message', 'Room Assignment Submitted successfully');
+    }
 
-        return back()->with('message', 'Room assigned successfully');
+    public function changeStatus(Request $request)
+    {
+        //
+        $roomAssignment = RoomAssignment::find($request->id);
+
+        $payments = Payment::where('user_id', $roomAssignment->user->id)->where('room_id', $roomAssignment->room_id)->get();
+        $totalPaid = array_sum($payments->pluck('amount')->toArray());
+        $deposit = array_sum(Rent::where('room_id', $roomAssignment->room_id)->pluck('deposit')->toArray());
+        $amount = array_sum(Rent::where('room_id', $roomAssignment->room_id)->pluck('amount')->toArray());
+        $totalBilled = $deposit + $amount;
+
+        if($totalBilled > $totalPaid){
+            return response()->json(['status'=>false]);
+            return back()->with('message', 'Cannot approve, there is a pending balance');
+        }
+
+        else {
+            $roomAssignment->status = 1;
+            $roomAssignment->save();
+            return response()->json(['status'=>true]);
+        }
+        
+
+
+
+        // return back()->with('message', 'Room assigned successfully');
     }
 
     /**

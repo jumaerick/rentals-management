@@ -14,6 +14,7 @@ class Payment extends Model
         'amount',
         'payment_method',
         'transaction_id',
+        'user_id',
     ];
 
     public function rent(){

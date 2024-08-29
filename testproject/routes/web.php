@@ -135,6 +135,7 @@ Route::group(['prefix' => 'roomAssignment', 'as' => 'roomAssignment.'], function
     Route::get('/create', [RoomAssignmentController::class, 'create'])->name('form');
     Route::post('/create', [RoomAssignmentController::class, 'store'])->name('store');
     Route::get('/index', [RoomAssignmentController::class, 'index'])->name('list');
+    Route::post('/post', [RoomAssignmentController::class, 'changeStatus'])->name('changeStatus');
     Route::post('/delete', [RoomAssignmentController::class, 'destroy'])->name('destroy');
     Route::post('/update', [RoomAssignmentController::class, 'update'])->name('update');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');

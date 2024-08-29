@@ -85,12 +85,12 @@
             var updateRoute = "{{ route('property.rooms', ':id') }}";
             updateRoute = updateRoute.replace(':id', property);
 
-
             $.ajax({
                 url: updateRoute,
                 type: "GET",
                 data: {
-                    "_token": "{{ csrf_token() }}"
+                    "_token": "{{ csrf_token() }}",
+                    id: property
                 },
                 dataType: "json",
                 success: function(data) {

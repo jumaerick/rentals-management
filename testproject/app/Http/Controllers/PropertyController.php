@@ -25,9 +25,9 @@ class PropertyController extends Controller
      }
 
 
-     public function rooms($id){
+     public function rooms(Request $request){
+        $rooms = Room::where('property_id', $request->id)->whereNotIn('id', RoomAssignment::where('status', 1)->pluck('room_id')->toArray())->get();
 
-        $rooms = Room::where('property_id', $id)->whereNotIn('id', RoomAssignment::all()->pluck('room_id')->toArray())->get();
         // $rooms = Property::find($id)->room;
 
         // dd($rooms);

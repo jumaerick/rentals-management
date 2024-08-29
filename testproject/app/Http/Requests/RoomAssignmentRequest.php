@@ -30,7 +30,8 @@ class RoomAssignmentRequest extends FormRequest
             'room_id' => [
                 'required',
                 Rule::unique('rooms_assignments')->where(function ($query) {
-                    return $query->where('room_id', $this->room_id); // or $this->house_id
+                    // dd($query->where('room_id', $this->room_id)->where('status','!=', 1)->get());
+                    return $query->where('room_id', $this->room_id)->where('status', 1); // or $this->house_id
                 }),
             ],
         ];

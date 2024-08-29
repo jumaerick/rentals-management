@@ -26,6 +26,7 @@ class PaymentRequest extends FormRequest
         return [
             'room_id' => 'required',
             'amount' => 'required|numeric',
+            'user_id'=> 'required',
             // 'payment_method' => 'required',
         ];
     }

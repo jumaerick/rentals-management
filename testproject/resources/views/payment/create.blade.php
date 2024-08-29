@@ -49,6 +49,23 @@
         @endif
     </div>
 
+    <div class="form-group">
+
+        <label for="user_id"> Select User</label>
+        <select name="user_id" id="user_id">
+
+            <option value="" selected disabled>Select User</option>
+            @foreach ($users as $user)
+                <option value="{{ $user->id }}">{{ $user->email }}</option>
+            @endforeach
+        </select>
+        @if ($errors->has('user_id'))
+            <span class="help-block text-danger">
+                <strong>{{ $errors->first('user_id') }}</strong>
+            </span>
+        @endif
+    </div>
+
 
     <div class="form-group">
         <label for="amount">Amount</label>
@@ -85,7 +102,8 @@
                 url: updateRoute,
                 type: "GET",
                 data: {
-                    "_token": "{{ csrf_token() }}"
+                    "_token": "{{ csrf_token() }}",
+                    'id':property
                 },
                 dataType: "json",
                 success: function(data) {
