@@ -40,11 +40,11 @@
 
                     <tr data-id="{{ $roomAssignment->id }}">
                         <td> {{ $roomAssignment->id }}</td>
-                        <td> {{ $roomAssignment->user->email }}</td>
-                        <td>{{ $roomAssignment->room->property->name }}</td>
-                        <td>{{ $roomAssignment->room->room_code }}</td>
-                        <td>Ksh. {{ array_sum($roomAssignment->user->payment->pluck('amount')->toArray()) }}</td>
-                        <td>{{ $roomAssignment->created_at }}</td>
+                        <td> {{ $roomAssignment->email }}</td>
+                        <td>{{ $roomAssignment->name }}</td>
+                        <td>{{ $roomAssignment->room_code }}</td>
+                        <td>Ksh. {{ $roomAssignment->total_amount}}</td>
+                        <!-- <td>{{ $roomAssignment->created_at }}</td> -->
 
                         <td>
                             <div class="table-actions">

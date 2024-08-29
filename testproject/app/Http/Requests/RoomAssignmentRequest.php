@@ -31,7 +31,7 @@ class RoomAssignmentRequest extends FormRequest
                 'required',
                 Rule::unique('rooms_assignments')->where(function ($query) {
                     // dd($query->where('room_id', $this->room_id)->where('status','!=', 1)->get());
-                    return $query->where('room_id', $this->room_id)->where('status', 1); // or $this->house_id
+                    return $query->where('room_id', $this->room_id)->where('user_id', $this->user_id); // or $this->house_id
                 }),
             ],
         ];
@@ -40,7 +40,7 @@ class RoomAssignmentRequest extends FormRequest
     public function messages()
     {
         return [
-            'room_id.unique' => 'Room has already been assigned, please choose a different room.',
+            'room_id.unique' => 'You already submitted a request for this room, please choose a different room.',
         ];
     }
 }

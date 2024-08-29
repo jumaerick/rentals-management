@@ -32,11 +32,28 @@ class RoomAssignmentController extends Controller
     public function index()
     {
         //
-        $roomAssignments = RoomAssignment::with(['room'])::select('user_id', DB::raw('SUM(amount) as total_amount'))
-        ->groupBy('user_id')
+
+        // $records = RoomAssignment::all();
+        $uniqueIds = RoomAssignment::distinct()->pluck('user_id')->toArray();
+        $records = collect();
+
+        foreach ($uniqueIds as $id){
+            $records->push(RoomAssignment::where('user_id', $id)->first());
+
+        }
+
+        // dd($records);
+
+        // dd($roomAssignments);
+        $roomAssignments = RoomAssignment::leftJoin('users', 'rooms_assignments.user_id', '=', 'users.id')
+        ->leftJoin('payments', 'rooms_assignments.room_id', '=', 'payments.room_id')
+        ->leftJoin('rooms', 'rooms_assignments.room_id', '=', 'rooms.id')
+        ->leftJoin('properties', 'rooms.property_id', '=', 'properties.id')
+        ->select('rooms_assignments.id','rooms_assignments.status', 'users.email', 'rooms.room_code', 'properties.name', DB::raw('SUM(payments.amount) as total_amount'))
+        ->groupBy('rooms_assignments.id', 'users.email', 'rooms.room_code', 'properties.name', 'rooms_assignments.status')
         ->get();
 
-        dd($roomAssignments);
+        // dd($roomAssignments);
         return view('roomAssignment.index')->with(['roomAssignments' => $roomAssignments]);
     }
 
