@@ -33,7 +33,9 @@ class RoomAssignmentController extends Controller
     {
         //
 
-        // $records = RoomAssignment::all();
+        $records = RoomAssignment::all();
+
+        // dd($records);
         $uniqueIds = RoomAssignment::distinct()->pluck('user_id')->toArray();
         $records = collect();
 
@@ -45,16 +47,22 @@ class RoomAssignmentController extends Controller
         // dd($records);
 
         // dd($roomAssignments);
-        $roomAssignments = RoomAssignment::join('users', 'rooms_assignments.user_id', '=', 'users.id')
-        ->join('payments', 'rooms_assignments.room_id', '=', 'payments.room_id')
-        ->join('rooms', 'rooms_assignments.room_id', '=', 'rooms.id')
-        ->join('properties', 'rooms.property_id', '=', 'properties.id')
-        ->select('users.email', 'rooms.room_code')
-        ->groupBy('users.email', 'rooms.room_code')
+        $results =RoomAssignment::leftJoin('rooms', 'rooms_assignments.room_id', '=', 'rooms.id'
+
+        )
+        ->leftJoin('users', 'rooms_assignments.user_id', '=', 'users.id' )
+        ->leftJoin('payments', 'users.id', 'payments.user_id')
+        ->leftJoin('properties', 'rooms.property_id', 'properties.id')
+        ->select('rooms_assignments.id','users.email', 'properties.name', 'rooms.room_code', 'rooms_assignments.id', 'rooms_assignments.status','amount')
         ->get();
 
-        dd($roomAssignments);
-        return view('roomAssignment.index')->with(['roomAssignments' => $roomAssignments]);
+
+
+        $mergedResults =  $results->groupBy(fn($row) => $row['email'].'_'.$row['room_code'].'_'.$row['name'].'_'.$row['status'].'_'.$row['created_at'])
+        ->map(fn($set) => array_merge($set->first()->toArray(), ['amount' =>$set->sum('amount')]));
+
+        // dd($mergedResults);
+        return view('roomAssignment.index')->with(['roomAssignments' => $mergedResults]);
     }
 
     /**

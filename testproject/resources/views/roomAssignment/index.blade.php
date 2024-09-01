@@ -30,7 +30,6 @@
                     <th>Property Name</th>
                     <th>Room Code</th>
                     <th>Cumulative Totals</th>
-                    <th>Date Assigned</th>
                     <th>Actions</th>
 
                 </tr>
@@ -38,43 +37,43 @@
             <tbody id="table-body">
                 @foreach ($roomAssignments as $roomAssignment)
 
-                    <tr data-id="{{ $roomAssignment->id }}">
-                        <td> {{ $roomAssignment->id }}</td>
-                        <td> {{ $roomAssignment->email }}</td>
-                        <td>{{ $roomAssignment->name }}</td>
-                        <td>{{ $roomAssignment->room_code }}</td>
-                        <td>Ksh. {{ $roomAssignment->total_amount}}</td>
-                        <!-- <td>{{ $roomAssignment->created_at }}</td> -->
 
-                        <td>
-                            <div class="table-actions">
-                                <form id="delete-property" action="{{ route('roomAssignment.destroy') }}" method="POST"
-                                    style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $roomAssignment->id }}"
-                                        id="property-id">
-                                    @csrf
-                                </form>
+                <tr data-id="{{ $roomAssignment['id'] }}">
+                    <td> {{ $roomAssignment['id'] }}</td>
+                    <td> {{ $roomAssignment['email'] }}</td>
+                    <td>{{ $roomAssignment['name'] }}</td>
+                    <td>{{ $roomAssignment['room_code'] }}</td>
+                    <td>Ksh. {{ $roomAssignment['amount']}}</td>
 
-                                <form id="update-property" action="{{ route('roomAssignment.update') }}" method="POST"
-                                    style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $roomAssignment->id }}"
-                                        id="property-id">
-                                    @csrf
-                                </form>
-                                <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('room.form') }}'"">Add</button> -->
-                                
-                                @if($roomAssignment->status =='1')
-                                <button class="btn btn-primary btn-sm" onclick="updateproperty()"
-                                    value="12">Unassign</button>
-                                @else
-                                <button class="btn btn-primary btn-sm" onclick="updateproperty()"
-                                    value="12">Assign</button>
-                                @endif
-                                <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn'
-                                    value="12">Delete</button>
-                            </div>
-                        </td>
-                @endforeach
+                    <td>
+                        <div class="table-actions">
+                            <form id="delete-property" action="{{ route('roomAssignment.destroy') }}" method="POST"
+                                style="display: none;">
+                                <input type="hidden" name="property-id" value="{{  $roomAssignment['id'] }}"
+                                    id="property-id">
+                                @csrf
+                            </form>
+
+                            <form id="update-property" action="{{ route('roomAssignment.update') }}" method="POST"
+                                style="display: none;">
+                                <input type="hidden" name="property-id" value="{{  $roomAssignment['id'] }}"
+                                    id="property-id">
+                                @csrf
+                            </form>
+                            <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('room.form') }}'"">Add</button> -->
+
+                            @if($roomAssignment['status'] =='1')
+                            <button class="btn btn-primary btn-sm" onclick="updateproperty()"
+                                value="12">Unassign</button>
+                            @else
+                            <button class="btn btn-primary btn-sm" onclick="updateproperty()"
+                                value="12">Assign</button>
+                            @endif
+                            <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn'
+                                value="12">Delete</button>
+                        </div>
+                    </td>
+                    @endforeach
                 </tr>
 
                 <!-- More rows as needed -->
@@ -110,12 +109,11 @@
                         },
                         success: function(response) {
 
-                            if (response.status == true){
-                                alert ('approved');
+                            if (response.status == true) {
+                                alert('approved');
 
-                            }
-                            else {
-                                alert ('Something went wrong')
+                            } else {
+                                alert('Something went wrong')
                             }
                         }
                     });
