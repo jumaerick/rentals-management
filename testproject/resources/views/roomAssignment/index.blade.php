@@ -27,7 +27,7 @@
                 <tr>
                     <th>#</th>
                     <th>User</th>
-                    <th>Property Name</th>
+                    <th>House Name</th>
                     <th>Room Code</th>
                     <th>Cumulative Totals</th>
                     <th>Status</th>
