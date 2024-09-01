@@ -39,27 +39,30 @@ class RoomAssignmentController extends Controller
         $uniqueIds = RoomAssignment::distinct()->pluck('user_id')->toArray();
         $records = collect();
 
-        foreach ($uniqueIds as $id){
+        foreach ($uniqueIds as $id) {
             $records->push(RoomAssignment::where('user_id', $id)->first());
-
         }
 
         // dd($records);
 
         // dd($roomAssignments);
-        $results =RoomAssignment::leftJoin('rooms', 'rooms_assignments.room_id', '=', 'rooms.id'
+        $results = RoomAssignment::leftJoin(
+            'rooms',
+            'rooms_assignments.room_id',
+            '=',
+            'rooms.id'
 
         )
-        ->leftJoin('users', 'rooms_assignments.user_id', '=', 'users.id' )
-        ->leftJoin('payments', 'users.id', 'payments.user_id')
-        ->leftJoin('properties', 'rooms.property_id', 'properties.id')
-        ->select('rooms_assignments.id','users.email', 'properties.name', 'rooms.room_code', 'rooms_assignments.id', 'rooms_assignments.status','amount')
-        ->get();
+            ->leftJoin('users', 'rooms_assignments.user_id', '=', 'users.id')
+            ->leftJoin('payments', 'users.id', 'payments.user_id')
+            ->leftJoin('properties', 'rooms.property_id', 'properties.id')
+            ->select('rooms_assignments.id', 'users.email', 'properties.name', 'rooms.room_code', 'rooms_assignments.id', 'rooms_assignments.status', 'amount')
+            ->get();
 
 
 
-        $mergedResults =  $results->groupBy(fn($row) => $row['email'].'_'.$row['room_code'].'_'.$row['name'].'_'.$row['status'].'_'.$row['created_at'])
-        ->map(fn($set) => array_merge($set->first()->toArray(), ['amount' =>$set->sum('amount')]));
+        $mergedResults =  $results->groupBy(fn($row) => $row['email'] . '_' . $row['room_code'] . '_' . $row['name'] . '_' . $row['status'] . '_' . $row['created_at'])
+            ->map(fn($set) => array_merge($set->first()->toArray(), ['amount' => $set->sum('amount')]));
 
         // dd($mergedResults);
         return view('roomAssignment.index')->with(['roomAssignments' => $mergedResults]);
@@ -85,6 +88,7 @@ class RoomAssignmentController extends Controller
     {
         //
         $roomAssignment = RoomAssignment::find($request->id);
+        $statuses = RoomAssignment::where('room_id', $roomAssignment->room_id)->pluck('status')->toArray();
 
         $payments = Payment::where('user_id', $roomAssignment->user->id)->where('room_id', $roomAssignment->room_id)->get();
         $totalPaid = array_sum($payments->pluck('amount')->toArray());
@@ -92,17 +96,19 @@ class RoomAssignmentController extends Controller
         $amount = array_sum(Rent::where('room_id', $roomAssignment->room_id)->pluck('amount')->toArray());
         $totalBilled = $deposit + $amount;
 
-        if($totalBilled > $totalPaid){
-            return response()->json(['status'=>false]);
+        if (($totalBilled > $totalPaid) &  ($roomAssignment->status == 0)) {
+            return response()->json(['status' => false]);
             return back()->with('message', 'Cannot approve, there is a pending balance');
-        }
-
-        else {
+        } elseif (in_array(1, $statuses) && ($roomAssignment->status == 0)) {
+            $roomAssignment->status = 2;
+            $roomAssignment->save();
+            return response()->json(['status' => "updated_status"]);
+        } elseif (($totalPaid >= $totalBilled) &  ($roomAssignment->status == 0)) {
             $roomAssignment->status = 1;
             $roomAssignment->save();
-            return response()->json(['status'=>true]);
+            return response()->json(['status' => true]);
         }
-        
+
 
 
 
