@@ -6,8 +6,10 @@ use App\Models\Rent;
 use App\Models\Company;
 use App\Models\Property;
 use App\Models\Room;
+use App\Models\RoomAssignment;
 use Illuminate\Http\Request;
 use App\Http\Requests\RentRequest;
+use Illuminate\Support\Carbon;
 
 class RentController extends Controller
 {
@@ -34,6 +36,15 @@ class RentController extends Controller
 
         // dd($rooms);
         return view('rent.index')->with(['rooms'=> $rooms, 'property'=>'All properties']);
+    }
+
+    public function rentListing()
+    {
+        //
+        $rooms = RoomAssignment::where('status', 1)->get();
+
+        // dd($rooms);
+        return view('rent.listing')->with(['rooms'=> $rooms, 'property'=>'All properties']);
     }
 
     /**

@@ -38,9 +38,9 @@
             <tbody id="table-body">
                 @foreach ($roomAssignments as $roomAssignment)
                 
-                @php
+                {{-- @php
                     dd($roomAssignment);
-                @endphp
+                @endphp --}}
 
 
                 <tr data-id="{{ $roomAssignment['id'] }}">

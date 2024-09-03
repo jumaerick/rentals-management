@@ -119,6 +119,8 @@ Route::group(['prefix' => 'rent', 'as' => 'rent.'], function () {
     Route::get('/index', [RentController::class, 'index'])->name('list');
     Route::post('/delete', [RentController::class, 'destroy'])->name('destroy');
     Route::post('/update', [RentController::class, 'update'])->name('update');
+    Route::get('/listing', [RentController::class, 'rentListing'])->name('rentListing');
+
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
 
