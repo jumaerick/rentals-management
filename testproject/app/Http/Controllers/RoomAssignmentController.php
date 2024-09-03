@@ -31,41 +31,56 @@ class RoomAssignmentController extends Controller
 
     public function index()
     {
-        //
+        
 
-        $records = RoomAssignment::all();
+        $records = RoomAssignment::select('user_id', 'room_id','status')->distinct()->get();
 
-        // dd($records);
-        $uniqueIds = RoomAssignment::distinct()->pluck('user_id')->toArray();
-        $records = collect();
+        $records = $records->map(function ($record) {
+            $totalAmount = Payment::where('user_id', $record->user_id)
+                ->where('room_id', $record->room_id)
+                ->pluck('amount')
+                ->sum();
+                
+            // Add the total amount to the record
+            // dd($record->room->property->name);
+            $record->amount = $totalAmount;
+            $record->email = $record->user->email;
+            $record->room_code = $record->room->room_code;
+            $record->name = $record->room->property->name;
 
-        foreach ($uniqueIds as $id) {
-            $records->push(RoomAssignment::where('user_id', $id)->first());
-        }
-
-        // dd($records);
-
-        // dd($roomAssignments);
-        $results = RoomAssignment::leftJoin(
-            'rooms',
-            'rooms_assignments.room_id',
-            '=',
-            'rooms.id'
-
-        )
-            ->leftJoin('users', 'rooms_assignments.user_id', '=', 'users.id')
-            ->leftJoin('payments', 'users.id', 'payments.user_id')
-            ->leftJoin('properties', 'rooms.property_id', 'properties.id')
-            ->select('rooms_assignments.id', 'users.email', 'properties.name', 'rooms.room_code', 'rooms_assignments.id', 'rooms_assignments.status', 'amount')
-            ->get();
+        
+            return $record;
+        });
 
 
+// Get the total payments for all records in one query
+// $paymentTotals = Payment::select('user_id', 'room_id', DB::raw('SUM(amount) as total_amount'))
+//     ->groupBy('user_id', 'room_id')
+//     ->get()
+//     ->mapWithKeys(function ($item) {
+//         // Create a unique key based on user_id and room_id
+//         $key = $item->user_id . '-' . $item->room_id;
+//         // Map the key to the total_amount
+//         return [$key => $item->total_amount];
+//     });
 
-        $mergedResults =  $results->groupBy(fn($row) => $row['email'] . '_' . $row['room_code'] . '_' . $row['name'] . '_' . $row['status'] . '_' . $row['created_at'])
-            ->map(fn($set) => array_merge($set->first()->toArray(), ['amount' => $set->sum('amount')]));
+// // Map the totals to the records
+// $records = RoomAssignment::with(['user', 'room.property'])
+//     ->select('user_id', 'room_id', 'status')
+//     ->distinct()
+//     ->get();
 
-        // dd($mergedResults);
-        return view('roomAssignment.index')->with(['roomAssignments' => $mergedResults]);
+// // Map the totals to the records
+// $records = $records->map(function ($record) use ($paymentTotals) {
+//     $key = $record->user_id . '-' . $record->room_id;
+//     $record->amount = $paymentTotals[$key] ?? 0; // Default to 0 if no payments
+//     $record->email = $record->user->email;
+//     $record->room_code = $record->room->room_code;
+//     $record->name = $record->room->property->name;
+//     return $record;
+// });
+
+        return view('roomAssignment.index')->with(['roomAssignments' => $records]);
     }
 
     /**
