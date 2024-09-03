@@ -32,10 +32,19 @@ class RoomAssignmentController extends Controller
     public function index()
     {
         //
-        $roomAssignments = RoomAssignment::with(['room'])::select('user_id', DB::raw('SUM(amount) as total_amount'))
-        ->groupBy('user_id')
-        ->get();
+        // $roomAssignments = RoomAssignment::with(['rent','room'])::select('user_id', DB::raw('SUM(amount) as total_amount'))
+        // ->groupBy('user_id')
+        // ->get();
 
+        $roomAssignments = DB::table('rooms_assignments')
+        ->join('payments', 'rooms_assignments.room_id', '=', 'payments.room_id')
+        ->join('properties', 'rooms_assignments.room_id', '=', 'properties.room_id')
+        ->groupBy('rooms_assignments.user_id', 'rooms_assignments.room_id')
+        ->addSelect('rooms_assignments.user_id')
+        ->addSelect('properties.name')
+        ->addSelect('rooms_assignments.room_id')
+        ->addSelect(DB::raw('SUM(payments.amount) as total_amount'))
+        ->get();
         dd($roomAssignments);
         return view('roomAssignment.index')->with(['roomAssignments' => $roomAssignments]);
     }
