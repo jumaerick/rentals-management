@@ -21,7 +21,7 @@
 <body>
 
     <div class="container mt-5">
-        <h2>Rooms</h2>
+        <h2>Room Assignment Requests</h2>
         <table class="table table-bordered">
             <thead>
                 <tr>
