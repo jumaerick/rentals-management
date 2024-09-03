@@ -27,10 +27,10 @@
                 <tr>
                     <th>#</th>
                     <th>User</th>
-                    <th>Property Name</th>
+                    <th>House Name</th>
                     <th>Room Code</th>
                     <th>Cumulative Totals</th>
-                    <th>Date Assigned</th>
+                    <th>Status</th>
                     <th>Actions</th>
 
                 </tr>
@@ -42,43 +42,59 @@
                     dd($roomAssignment);
                 @endphp
 
-                    <tr data-id="{{ $roomAssignment->id }}">
-                        <td> {{ $roomAssignment->id }}</td>
-                        <td> {{ $roomAssignment->user->email }}</td>
-                        <td>{{ $roomAssignment->room->property->name }}</td>
-                        <td>{{ $roomAssignment->room->room_code }}</td>
-                        <td>Ksh. {{ array_sum($roomAssignment->user->payment->pluck('amount')->toArray()) }}</td>
-                        <td>{{ $roomAssignment->created_at }}</td>
 
-                        <td>
-                            <div class="table-actions">
-                                <form id="delete-property" action="{{ route('roomAssignment.destroy') }}" method="POST"
-                                    style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $roomAssignment->id }}"
-                                        id="property-id">
-                                    @csrf
-                                </form>
+                <tr data-id="{{ $roomAssignment['id'] }}">
+                    <td> {{ $roomAssignment['id'] }}</td>
+                    <td> {{ $roomAssignment['email'] }}</td>
+                    <td>{{ $roomAssignment['name'] }}</td>
+                    <td>{{ $roomAssignment['room_code'] }}</td>
+                    <td>Ksh. {{ $roomAssignment['amount']}}</td>
 
-                                <form id="update-property" action="{{ route('roomAssignment.update') }}" method="POST"
-                                    style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $roomAssignment->id }}"
-                                        id="property-id">
-                                    @csrf
-                                </form>
-                                <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('room.form') }}'"">Add</button> -->
-                                
-                                @if($roomAssignment->status =='1')
-                                <button class="btn btn-primary btn-sm" onclick="updateproperty()"
-                                    value="12">Unassign</button>
-                                @else
-                                <button class="btn btn-primary btn-sm" onclick="updateproperty()"
-                                    value="12">Assign</button>
-                                @endif
-                                <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn'
-                                    value="12">Delete</button>
-                            </div>
-                        </td>
-                @endforeach
+                    @if($roomAssignment['status']==1)
+                    <td>Active</td>
+
+                    @elseif($roomAssignment['status']==2)
+                    <td>Pending</td>
+
+                    @else
+
+                    <td>Inactive</td>
+                    @endif
+
+
+                    <td>
+                        <div class="table-actions">
+                            <form id="delete-property" action="{{ route('roomAssignment.destroy') }}" method="POST"
+                                style="display: none;">
+                                <input type="hidden" name="property-id" value="{{  $roomAssignment['id'] }}"
+                                    id="property-id">
+                                @csrf
+                            </form>
+
+                            <form id="update-property" action="{{ route('roomAssignment.update') }}" method="POST"
+                                style="display: none;">
+                                <input type="hidden" name="property-id" value="{{  $roomAssignment['id'] }}"
+                                    id="property-id">
+                                @csrf
+                            </form>
+                            <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('room.form') }}'"">Add</button> -->
+
+                            @if($roomAssignment['status'] =='1')
+                            <button class="btn btn-primary btn-sm" onclick="updateproperty()"
+                                value="12">Change Status</button>
+
+                            @elseif($roomAssignment['status'] =='2')
+                            <button class="btn btn-primary btn-sm" onclick="updateproperty()"
+                                value="12">Change Status</button>                            
+                            @else
+                            <button class="btn btn-primary btn-sm" onclick="updateproperty()"
+                                value="12">Change Status</button>
+                            @endif
+                            <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn'
+                                value="12">Delete</button>
+                        </div>
+                    </td>
+                    @endforeach
                 </tr>
 
                 <!-- More rows as needed -->
@@ -114,12 +130,26 @@
                         },
                         success: function(response) {
 
-                            if (response.status == true){
-                                alert ('approved');
+                            if (response.status == true) {
+                                alert('approved');
+                                setTimeout(
+                                location.reload(), 1000
+                            )
 
                             }
+
+                            else if (response.status=='updated_status'){
+                                alert('Updated Status');
+                            setTimeout(
+                                location.reload(), 1000
+                            )
+                            }
+                            
                             else {
-                                alert ('Something went wrong')
+                                alert('Something went wrong');
+                                setTimeout(
+                                location.reload(), 1000
+                            )
                             }
                         }
                     });
