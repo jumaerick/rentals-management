@@ -6,6 +6,7 @@ use App\Models\Rent;
 use App\Models\Company;
 use App\Models\Property;
 use App\Models\Room;
+use App\Models\Payment;
 use App\Models\RoomAssignment;
 use Illuminate\Http\Request;
 use App\Http\Requests\RentRequest;
@@ -25,7 +26,7 @@ class RentController extends Controller
         $companies = Company::all();
         $properties = Property::all();
         $rooms = Room::all();
-        return view('rent.create')->with(['companies' => $companies, 'properties' => $properties, 'rooms'=> $rooms]);
+        return view('rent.create')->with(['companies' => $companies, 'properties' => $properties, 'rooms' => $rooms]);
     }
 
 
@@ -35,16 +36,41 @@ class RentController extends Controller
         $rooms = Room::with(['rent'])->get();
 
         // dd($rooms);
-        return view('rent.index')->with(['rooms'=> $rooms, 'property'=>'All properties']);
+        return view('rent.index')->with(['rooms' => $rooms, 'property' => 'All properties']);
     }
 
     public function rentListing()
     {
-        //
-        $rooms = RoomAssignment::where('status', 1)->get();
 
-        // dd($rooms);
-        return view('rent.listing')->with(['rooms'=> $rooms, 'property'=>'All properties']);
+        $records = RoomAssignment::select('id', 'user_id', 'room_id', 'status','updated_at')->where('status', 1)->distinct()->get();
+
+
+        $records = $records->map(function ($record) {
+            $totalAmount = Payment::where('user_id', $record->user_id)
+                ->where('room_id', $record->room_id)
+                ->pluck('amount')
+                ->sum();
+
+            $at = Carbon::parse($record->updated_at)->format('Y-m'); 
+            $cl = Carbon::now()->format('Y-m'); 
+
+            $dateDiff = Carbon::parse($cl)->diffInMonths(Carbon::parse($at)) + 1; 
+            $paid = $totalAmount;
+            $billed = ($dateDiff * ($record->room->rent->amount) + ($record->room->rent->deposit));
+            $balance = $paid - $billed;
+            $record->amount = $totalAmount;
+            $record->email = $record->user->email;
+            $record->room_code = $record->room->room_code;
+            $record->name = $record->room->property->name;
+            $record->balance =  $record->name = $balance;
+
+
+            return $record;
+        });
+
+        // dd($records);
+
+        return view('rent.listing')->with(['rooms' => $records, 'property' => 'All properties']);
     }
 
     /**

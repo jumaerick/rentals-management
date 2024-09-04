@@ -21,9 +21,10 @@
 <body>
 
     @php
-    use Illuminate\Support\Carbon;
+        use Illuminate\Support\Carbon;
 
         // dd(Carbon::now()->format('Y-m-d'));
+
     @endphp
     <div class="container mt-5">
         <h2>Rent payment status</h2>
@@ -31,11 +32,12 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Email</th>
                     <th>Property Name</th>
                     <th>Room Code</th>
-                    <th>Deposit</th>
-                    <th>Rent Amount</th>
-                    <th>Rent Date</th>
+                    <th>Total Paid</th>
+                    <th>Balance</th>
+                    <th>Status</th>
                     {{-- <th>Actions</th> --}}
 
                 </tr>
@@ -43,47 +45,20 @@
             <tbody id="table-body">
 
                 @foreach ($rooms as $room)
-                @php
-$at = Carbon::parse($room->updated_at)->format('Y-m'); // Parses updated_at as a Carbon instance
-$cl = Carbon::now()->format('Y-m'); // Gets the current date in the specified format
-
-// Calculate the date difference
-$dateDiff = Carbon::parse($cl)->diffInMonths(Carbon::parse($at)) + 1; // Use diffInDays for an integer difference
-
-// dd($dateDiff); // Dump the difference
-                @endphp
                     <tr data-id="{{ $room->id }}">
-
-                        
                         <td> {{ $room->id }}</td>
+                        <td> {{ $room->email }}</td>
                         <td>{{ $room->room->property->name }}</td>
                         <td>{{ $room->room->room_code }}</td>
-                        <td>{{ $room->room->rent->deposit ?? '' }}</td>
-                        <td>{{ $room->room->rent->amount ?? ''}}</td>
-                        <td>{{ $room->updated_at}}</td>
-
-                        {{-- <td>
-                            <div class="table-actions">
-                                <form id="delete-property" action="{{ route('room.destroy') }}" method="POST"
-                                    style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $room->id }}"
-                                        id="property-id">
-                                    @csrf
-                                </form>
-
-                                <form id="update-property" action="{{ route('room.update') }}" method="POST"
-                                    style="display: none;">
-                                    <input type="hidden" name="property-id" value="{{ $room->id }}"
-                                        id="property-id">
-                                    @csrf
-                                </form>
-                                <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('room.form') }}'"">Add</button> -->
-                                <button class="btn btn-primary btn-sm" onclick="updateproperty()"
-                                    value="12">Update</button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteproperty()" id='deleteBtn'
-                                    value="12">Delete</button>
-                            </div>
-                        </td> --}}
+                        <td>{{ $room->amount }}</td>
+                        <td>{{ $room->balance }}</td>
+                        @if ($room->balance == 0)
+                        <td>Cleared</td>
+                        @elseif($room->balance > 0)
+                        <td>Overpaid</td>
+                        @else
+                        <td>Pending</td>
+                        @endif
                 @endforeach
                 </tr>
 
