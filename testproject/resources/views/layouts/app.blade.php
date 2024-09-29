@@ -1,20 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr">
 
 <head>
-    <title>
-        {{env('APP_NAME')}}
-    </title>
     <meta charset="utf-8">
-    <meta http-equiv=”refresh” content="{{ config('session.lifetime') * 60 }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>{{ config('app.name', 'Rentals Management System') }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}"> <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{ asset('css/style.css') }} "> <!-- Custom stlylesheet -->
 </head>
 
 <body>
+    
+    <!-- <div id="header">
+    
+        <div class="container">
+            <div class="row">
+                <div class="offset-md-4 col-md-4">
+                    <div class="logo">
+                        <a href="#"><img src="{{ asset('images/library.png') }}"></a>
+                    </div>
+                </div>
+                <div class="offset-md-2 col-md-2">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="">Change Password</a>
+                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit()">Log Out</a>
+                        </div>
+                        <form method="post" id="logoutForm" action="{{ route('logout') }}">
+                            @csrf
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  -->
+    <div id="menubar">
+        <!-- Menu Bar -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="menu">
+                        <li><a href="">Dashboard</a></li>
+                        <li><a href="{{route('user.index')}}">Users</a></li>
+                        <li><a href="">Rooms</a></li>
+                        <li><a href="">Room Assignments</a></li>
+                        <li><a href="">Payments</a></li>
+                        <li><a href="">Rents</a></li>
+                        <li><a href="">Reports</a></li>
+                        <li><a href="">Settings</a></li>
+                        <li>
+         
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="">Change Password</a>
+                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit()">Log Out</a>
+                        </div>
+                        <form method="post" id="logoutForm" action="{{ route('logout') }}">
+                            @csrf
+                        </form>
+                    </div>
+           
+                        </li>
 
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /Menu Bar -->
+
+@yield('content')
+
+    <!-- FOOTER -->
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <span>© Copyright {{ now()->format("Y") }} <a href="https://www.yahoobaba.net">Jumaae</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /FOOTER -->
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 
 </html>

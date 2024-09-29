@@ -17,11 +17,10 @@ class CreatePropertiesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('property_code');
-            $table->integer('company_id');
             $table->string('location');
-
-
+            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
+
         });
     }
 

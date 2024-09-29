@@ -14,6 +14,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RoomAssignmentController;
 use App\Http\Controllers\RentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Auth;
@@ -44,9 +45,13 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('/login', [LoginController::class, 'show'])->name('login.form');
     Route::post('/login', [LoginController::class, 'login'])->name('login');
 
-    Route::get('/index', [UserController::class, 'index'])->name('list');
-    Route::post('/delete', [UserController::class, 'destroy'])->name('destroy');
-    Route::post('/update', [UserController::class, 'update'])->name('update');
+    Route::get('/index', [UserController::class, 'index'])->name('index');
+    Route::get('/create', [UserController::class, 'create'])->name('create');
+    Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit');
+    Route::post('/delete/{id}', [UserController::class, 'destroy'])->name('destroy');
+    Route::any('/show/{id}', [UserController::class, 'show'])->name('show');
+    Route::post('/user/create', [UserController::class, 'store'])->name('store');
+    Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
 });
 
 Route::get('password/reset', function () {
@@ -142,5 +147,10 @@ Route::group(['prefix' => 'roomAssignment', 'as' => 'roomAssignment.'], function
     Route::post('/update', [RoomAssignmentController::class, 'update'])->name('update');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [dashboardController::class, 'index'])->name('dashboard');
+});
+
 
 

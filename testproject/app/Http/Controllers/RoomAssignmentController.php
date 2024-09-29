@@ -44,7 +44,7 @@ class RoomAssignmentController extends Controller
             // Add the total amount to the record
             // dd($record->room->property->name);
             $record->amount = $totalAmount;
-            $record->email = $record->user->email;
+            $record->email = $record->user ? $record->user->email : '';
             $record->room_code = $record->room->room_code;
             $record->name = $record->room->property->name;
 

@@ -15,12 +15,14 @@ class CreateRentsTable extends Migration
     {
         Schema::create('rents', function (Blueprint $table) {
             $table->id();
-            $table->string('room_id');
+            $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade')->onUpdate('cascade');
             $table->float('amount');
             $table->float('deposit');
             $table->date('rent_date')->nullable();
             $table->timestamps();
         });
+
+
     }
 
     /**

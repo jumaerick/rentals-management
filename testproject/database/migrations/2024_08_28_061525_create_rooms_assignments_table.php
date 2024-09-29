@@ -15,11 +15,14 @@ class CreateRoomsAssignmentsTable extends Migration
     {
         Schema::create('rooms_assignments', function (Blueprint $table) {
             $table->id();
-            $table->integer('room_id');
-            $table->integer('user_id');
+            $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');  
             $table->integer('status')->default(0);            
             $table->timestamps();
+
         });
+
+
     }
 
     /**

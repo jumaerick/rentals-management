@@ -15,10 +15,11 @@ class CreateProfilesTable extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('location')->nullable();
             $table->timestamps();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+ 
         });
     }
 
@@ -31,4 +32,6 @@ class CreateProfilesTable extends Migration
     {
         Schema::dropIfExists('profiles');
     }
+
+    
 }

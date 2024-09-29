@@ -19,6 +19,8 @@ class LoginController extends Controller
     {
         $credentials = $request->validated();
 
+        // dd($credentials);
+
         if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
 
             // if (!Auth::user()->email_verified_at) {
@@ -28,7 +30,7 @@ class LoginController extends Controller
             // }
 
             $request->session()->regenerate();
-            return redirect('home')->with('message', 'Login Successfully');
+            return redirect('/dashboard')->with('message', 'Login Successfully');
         }
 
         return back()->withErrors([
