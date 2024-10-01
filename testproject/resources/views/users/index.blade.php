@@ -5,10 +5,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h2 class="admin-heading">All Students</h2>
+                    <h2 class="admin-heading">All Users</h2>
                 </div>
                 <div class="offset-md-6 col-md-2">
-                    <a class="add-new" href="{{ route('user.create') }}">Add Student</a>
+                    <a class="add-new" href="{{ route('user.create') }}">Add User</a>
                 </div>
             </div>
             <div class="row">

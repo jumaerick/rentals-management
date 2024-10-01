@@ -1,68 +1,85 @@
-@include('layouts.app')
+@extends('layouts.guest')
+@section('content')
 
+    <div id="wrapper-admin">
+        <div class="container">
+        <div class="row">
 
-{{-- @if ($errors->any())
+            <div class="offset-md-3 col-md-6">
+            <p>Kindly fill in your details below</p>
+                <form class="yourform" action="{{ route('user.store') }}" method="post" autocomplete="off">
+                    @csrf
+                    <div class="form-group">
+                        <label>User Name</label>
+                        <input type="text" class="form-control" placeholder="User Name" name="name"
+                            value="{{ old('name') }}" required>
+                        @error('name')
+                        <div class="alert alert-danger" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
 
-<ul>
-    @foreach ($errors->all() as $error)
-        <li>{{$error}}</li>
-    @endforeach
-</ul>
-@endif --}}
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" placeholder="Email" name="email"
+                            value="{{ old('email') }}" required>
+                        @error('email')
+                        <div class="alert alert-danger" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                    <!-- <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="phone" class="form-control" placeholder="Phone Number" name="phone_number"
+                            value="{{ old('phone_number') }}" required>
+                        @error('phone_number')
+                        <div class="alert alert-danger" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div> -->
 
-<div class="container">
-    <div class="row justify-content-center">
-    <h2>
-        Kindly Create Your Account
-    </h2>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" placeholder="password" name="password"
+                            value="{{ old('password') }}" required>
+                        @error('password')
+                        <div class="alert alert-danger" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
 
-    <form action="{{ route('user.create') }}" method="post">
-        @csrf
-        <div class="form-group">
-            <label for="name">Full Names</label>
-            <input type="text" name="name" id="name" value="{{ old('name') }}" class="form-control">
-            @if ($errors->has('name'))
-                <span class="help-block text-danger">
-                    <strong>{{ $errors->first('name') }}</strong>
-                </span>
-            @endif
+                    <div class="form-group">
+                        <label>Password Confirmation</label>
+                        <input type="password" class="form-control" placeholder="password" name="password_confirmation"
+                            value="{{ old('password_confirmation') }}" required>
+                        @error('password_confirmation')
+                        <div class="alert alert-danger" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                    
+                    <!-- <div class="form-group">
+                            <label>Gender</label>
+                            <select name="gender" class="form-control">
+                                <option value="male" selected>Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            @error('gender')
+                                <div class="alert alert-danger" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div> -->
+
+                    <input type="submit" name="save" class="btn btn-danger" value="save">
+                </form>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" value="{{ old('email') }}" class="form-control">
-            @if ($errors->has('email'))
-                <span class="help-block text-danger">
-                    <strong>{{ $errors->first('email') }}</strong>
-                </span>
-            @endif
         </div>
-
-        <div class="form-group">
-            <label for="Password">Password</label>
-            <input type="Password" name="password" id="password" class="form-control">
-            @if ($errors->has('password'))
-                <span class="help-block text-danger">
-                    <strong>{{ $errors->first('password') }}</strong>
-                </span>
-            @endif
-        </div>
-
-        <div class="form-group">
-            <label for="password_confirmation">Confirm Password</label>
-            <input type="Password" name="password_confirmation" id="password_confirmation" class="form-control">
-        </div>
-        @if ($errors->has('password_confirmation'))
-            <span class="help-block text-danger">
-                <strong>{{ $errors->first('password_confirmation') }}</strong>
-            </span>
-        @endif
-
-        <div class="form-group">
-            <button class="btn-success">Register</button>
-        </div>
-    </form>
     </div>
-    </div>
-</div>
-
+@endsection

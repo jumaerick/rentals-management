@@ -100,7 +100,7 @@ Route::group(['prefix' => 'company', 'as' => 'company.'], function () {
 Route::group(['prefix' => 'property', 'as' => 'property.'], function () {
     Route::get('/create', [PropertyController::class, 'create'])->name('form');
     Route::post('/create', [PropertyController::class, 'store'])->name('store');
-    Route::get('/index', [PropertyController::class, 'index'])->name('list');
+    Route::get('/index', [PropertyController::class, 'index'])->name('index');
     Route::post('/delete', [PropertyController::class, 'destroy'])->name('destroy');
     Route::get('/{property}', [PropertyController::class, 'show'])->name('show');
     Route::post('/update', [PropertyController::class, 'update'])->name('update');
@@ -111,7 +111,7 @@ Route::group(['prefix' => 'property', 'as' => 'property.'], function () {
 Route::group(['prefix' => 'room', 'as' => 'room.'], function () {
     Route::get('/create', [RoomController::class, 'create'])->name('form');
     Route::post('/create', [RoomController::class, 'store'])->name('store');
-    Route::get('/index', [RoomController::class, 'index'])->name('list');
+    Route::get('/index', [RoomController::class, 'index'])->name('index');
     Route::post('/delete', [RoomController::class, 'destroy'])->name('destroy');
     Route::post('/update', [RoomController::class, 'update'])->name('update');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');

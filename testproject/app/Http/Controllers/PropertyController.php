@@ -43,10 +43,13 @@ class PropertyController extends Controller
     public function index()
     {
         //
-        $properties = Property::all();
+        return view('property.index', [
+            'properties' => Property::Paginate(5),
+            'company' =>'All Companies'
+        ]);
         
 
-        return view('property.index')->with(['properties'=>$properties, 'company' =>'All Companies']);
+        // return view('property.index')->with(['properties'=>$properties, 'company' =>'All Companies']);
     }
 
     /**

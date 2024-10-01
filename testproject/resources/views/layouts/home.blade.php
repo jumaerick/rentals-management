@@ -47,10 +47,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <ul class="menu">
-                        <li><a href="{{route('dashboard')}}">Dashboard</a></li>
+                        <li><a href="">Profile</a></li>
                         <li><a href="{{route('user.index')}}">Users</a></li>
-                        <li><a href="{{route('property.index')}}">Properties</a></li>
-                        <li><a href="{{route('room.index')}}">Rooms</a></li>
+                        <li><a href="">Rooms</a></li>
                         <li><a href="">Room Assignments</a></li>
                         <li><a href="">Payments</a></li>
                         <li><a href="">Rents</a></li>
@@ -61,7 +60,7 @@
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <!-- Hi {{ auth()->user()->name }} -->
+                            Hi {{ auth()->user()->name }}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="">Change Password</a>

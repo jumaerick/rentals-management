@@ -39,7 +39,7 @@ class UserController extends Controller
         $this->createProfile($user);
         // event(new Registered($user));
 
-        return view('home')->with('message', 'Account created Successfully');
+        return redirect()->route('home')->with('message', 'Account created Successfully');
     }
 
     /**
@@ -95,13 +95,14 @@ class UserController extends Controller
         $user = User::where('id', $id)->first();
 
         if($user->email != $data['email']){
-            $user  =  User::where('email', $data['email'])->first();
-            if($user){
+            $findUser  =  User::where('email', $data['email'])->first();
+            if($findUser){
                     return back()->withErrors([
                         'email' => 'The email is already taken.',
                     ])->onlyInput('email');
             }
         }
+
 
         $user->name = $data['name'];
         $user->email = $data['email'];
