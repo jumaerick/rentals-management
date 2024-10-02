@@ -5,10 +5,10 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4">
-                <h2 class="admin-heading">All Users</h2>
+                <h2 class="admin-heading">All Properties</h2>
             </div>
             <div class="offset-md-6 col-md-2">
-                <a class="add-new" href="{{ route('user.create') }}">Add User</a>
+                <a class="add-new" href="{{ route('user.create') }}">Add Property</a>
             </div>
         </div>
         <div class="row">
@@ -34,11 +34,11 @@
                             <td>{{$property->company->name}}</td>
                             <td>{{$property->location}}</td>
                             <td class="view">
-                                <button data-uid='{{ $property->id }}>'
-                                    class="btn btn-primary view-btn" id='btnMe'>View</button>
+                                <a href="{{route('property.show', $property->id)}}" class="btn btn-primary">View Rooms</a>      
+
                             </td>
                             <td class="edit">
-                                <a href="" class="btn btn-success">Edit</a>
+                                <a href="{{route('property.edit', $property->id)}}" class="btn btn-success">Edit</a>
                             </td>
                             <td class="delete">
                                 <button data-uid='' class="btn btn-danger delete-student">Delete</button>

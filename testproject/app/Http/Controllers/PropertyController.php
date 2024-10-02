@@ -6,6 +6,7 @@ use App\Models\Property;
 use App\Models\Company;
 use App\Models\RoomAssignment;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\PropertyRequest;
 
@@ -39,6 +40,13 @@ class PropertyController extends Controller
         return response()->json($rooms);
      }
 
+
+     public function edit(Property $property)
+     {
+         //
+         $companies = Company::all();
+         return view('property.edit')->with(['property' =>$property, 'companies' =>$companies]);
+     }
 
     public function index()
     {
@@ -75,9 +83,16 @@ class PropertyController extends Controller
     {
         //
 
-        $rooms = $property->room;
+        // $rooms = $property->room;
 
-        return view('room.index')->with(['rooms'=>$rooms, 'property'=>$property->name]);
+        $rooms  = Room::where('property_id', $property->id)->paginate(5);
+
+        return view('room.index', 
+        [
+            'rooms'=>$rooms, 
+            'property'=>$property->name]);
+
+        // return view('room.index')->with(['rooms'=>$rooms, 'property'=>$property->name]);
 
     }
 
