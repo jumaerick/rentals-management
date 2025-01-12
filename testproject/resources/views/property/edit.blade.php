@@ -13,7 +13,7 @@
                     autocomplete="off">
                     @csrf
                     <div class="form-group">
-                        <label>Names</label>
+                        <label>Property Name</label>
                         <input type="text" class="form-control" placeholder="name" name="name"
                             value="{{ $property->name }}" required>
                         @error('name')
@@ -24,10 +24,22 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Property Code</label>
+                        <input type="text" class="form-control" placeholder="property_code" name="property_code"
+                            value="{{ $property->property_code }}" required>
+                        @error('property_code')
+                        <div class="alert alert-danger" role="alert">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
                         <label>Company</label>
-                        <select name="company_id" id="company_id">
+                        <select name="company_id" id="company_id" class="form-control" required>
+                            <option value=""selected>Select Company</option>
 @foreach($companies as $company)
-<option value="{{$company->id}}"{{(old('company_id', $company->id) == $company->id) ? 'selected' : ''}}>{{$company->name}}</option>
+<option value="{{$company->id}}"{{(old('company_id', $company->id) == $cid) ? 'selected' : ''}}>{{$company->name}}</option>
 @endforeach
 </select>
                         @error('company')
@@ -36,9 +48,7 @@
                         </div>
                         @enderror
                     </div>
-@php
-dd($property->location);
-@endphp
+
 
                     <div class="form-group">
                         <label>Location</label>

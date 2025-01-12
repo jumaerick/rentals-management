@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -15,9 +14,12 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function login(LoginRequest $request)
+    public function login(Request $request)
     {
-        $credentials = $request->validated();
+        $credentials = $request->validate([
+            'email'=>'required|email',
+            'password'=> 'required|min:8',
+        ]);
 
         // dd($credentials);
 
@@ -28,8 +30,12 @@ class LoginController extends Controller
             //         'email' => 'Your Account is not activated.',
             //     ])->onlyInput('email');
             // }
-
+  
             $request->session()->regenerate();
+            if(Auth::user()->role->name=='registered_user'){
+                return redirect('/home')->with('message', 'Login Successfully');
+            }
+
             return redirect('/dashboard')->with('message', 'Login Successfully');
         }
 

@@ -32,10 +32,10 @@ class RentController extends Controller
     public function index()
     {
         //
-        $rooms = Room::with(['rent'])->get();
+        $rents = Rent::all();
 
         // dd($rooms);
-        return view('rent.index')->with(['rooms'=> $rooms, 'property'=>'All properties']);
+        return view('rent.index')->with(['rents'=> $rents, 'property'=>'All properties']);
     }
 
     public function rentListing()
@@ -57,7 +57,7 @@ class RentController extends Controller
     {
         //
         $rent = Rent::create($request->validated());
-        return back()->with('message', 'Company added successfully');
+        return back()->with('message', 'Rent added successfully');
     }
 
     /**
@@ -66,11 +66,22 @@ class RentController extends Controller
      * @param  \App\Models\Rent  $rent
      * @return \Illuminate\Http\Response
      */
-    public function show(Rent $rent)
+    public function show(Request $request, $id)
     {
         //
+        $rent = Rent::where('id', $id)->with(['room'])->first();
+        return response()->json($rent);
     }
 
+
+    public function deposit(Request $request, $id)
+    {
+        //
+        $rent = Rent::where('room_id', $request->id)->with(['room'])->first();
+        $deposit = $rent ? $rent->deposit : false;
+        $amount = $rent ? $rent->amount : false;
+        return response()->json(['deposit'=>$deposit, 'amount'=>$amount]);
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -78,9 +89,44 @@ class RentController extends Controller
      * @param  \App\Models\Rent  $rent
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Rent $rent)
+    public function update(Request $request, $id)
     {
         //
+        $data = $request->validate(
+            [
+                'property_id' => 'required',
+                'room_id' => 'required',
+                'amount' => 'required|numeric',
+                'deposit' => 'required|numeric',
+                'rent_date' => 'required|date',
+
+            ]
+        );
+
+        $rent = Rent::where('id', $id)->first();
+
+        // $rent->property_id = $data['property_id'];
+        $rent->room_id = $data['room_id'];
+        $rent->amount = $data['amount'];
+        $rent->deposit = $data['deposit'];
+        $rent->rent_date = $data['rent_date'];
+        $rent->save();
+
+        return redirect()->route('rent.index')->with(['message'=> 'Rent details updated successfully']);
+
+
+    }
+
+    public function edit($id)
+    {
+        //
+
+        $rents = Rent::where('id', $id)->first();
+        $properties = Property::all();
+        $rooms = Room::all();
+        return view('rent.edit')->with(['rents'=>$rents, 'properties'=> $properties, 
+        'rooms'=> $rooms
+    ]);
     }
 
     /**
@@ -89,8 +135,11 @@ class RentController extends Controller
      * @param  \App\Models\Rent  $rent
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Rent $rent)
+    public function destroy(Request $request)
     {
+        Rent::find($request->id)->delete();
+        return response()->json(['status' => true]);
+
         //
     }
 }

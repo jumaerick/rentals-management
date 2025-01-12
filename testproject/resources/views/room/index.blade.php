@@ -29,24 +29,25 @@
                         <td> {{ $room->id }}</td>
                         <td>{{ $room->property->name }}</td>
                         <td>{{ $room->room_code }}</td>
-                            <td class="view">
-                                <a href="{{route('property.show', $room->id)}}" class="btn btn-primary">View</a>      
-
-                            </td>
+                        <td class="view">
+                <button data-rid='{{ $room->id }}>'
+                    class="btn btn-primary view-btn" id='btnMe'>View</button>
+            </td>
                             <td class="edit">
-                                <a href="" class="btn btn-success">Edit</a>
+                                <a href="{{route('room.edit', $room->id)}}" class="btn btn-success">Edit</a>
                             </td>
                             <td class="delete">
-                                <button data-uid='' class="btn btn-danger delete-student">Delete</button>
+                                <button data-rid='{{$room->id}}' class="btn btn-danger delete-room">Delete</button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8">No User Found</td>
+                            <td colspan="8">No Rooms Listed</td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
+
                 {{ $rooms->links('vendor/pagination/bootstrap-4') }}
                 <div id="modal">
                     <div id="modal-form">
@@ -69,19 +70,18 @@
     // })
 
     $(".view-btn").on("click", function() {
-        var user_id = $(this).data("uid");
+        var room_id = $(this).data("rid");
         var token = $('meta[name="csrf-token"]').attr('content');
-        var ViewRoute = "{{route('user.show', ':id')}}"
-        ViewRoute = ViewRoute.replace(':id', user_id);
+        var ViewRoute = "{{route('room.show', ':id')}}"
+        ViewRoute = ViewRoute.replace(':id', room_id);
         $.ajax({
             url: ViewRoute,
             data: {
                 _token: token
             },
             type: "post",
-            success: function(user) {
-                console.log(user);
-                form = "<tr><td>Username :</td><td><b>" + user['name'] + "</b></td></tr><tr><td>Email :</td><td><b>" + user['email'] + "</b></td></tr><tr><td>Location :</td><td><b>" + user['location'] + "</b></td></tr><tr><td>Phone :</td><td><b>" + user['phone_number'] + "</b></td></tr>";
+            success: function(room) {
+                form = "<tr><td>Property :</td><td><b>" + room['name'] + "</b></td></tr><tr><td>Room Code :</td><td><b>" + room['room_code'] + "</b></td></tr>";
                 console.log(form);
 
                 $("#modal-form table").html(form);
@@ -94,11 +94,11 @@
         $("#modal").hide();
     });
 
-    $(".delete-student").on("click", function() {
+    $(".delete-room").on("click", function() {
         if (confirm('Are you sure you want to delete this record?')) {
-            var u_id = $(this).data("uid");
+            var u_id = $(this).data("rid");
             var token = $('meta[name="csrf-token"]').attr('content');
-            var DeleteRoute = "{{route('user.destroy', ':id')}}"
+            var DeleteRoute = "{{route('room.destroy', ':id')}}"
             DeleteRoute = DeleteRoute.replace(':id', u_id);
             $.ajax({
                 url: DeleteRoute,

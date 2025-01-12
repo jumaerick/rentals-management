@@ -26,15 +26,15 @@ class RentRequest extends FormRequest
     {
         return [
             'property_id' => 'required',
-            'room_id' => [
+            'rent_date' => [
                 'required',
                 Rule::unique('rents')->where(function ($query) {
-                    return $query->where('room_id', $this->room_id); // or $this->house_id
+                    return $query->where('rent_date', $this->rent_date)->where('room_id', $this->room_id); // or $this->house_id
                 }),
             ],
             'amount' => 'required|numeric',
             'deposit' => 'required|numeric',
-            'rent_date'=>'required|date'
+            'room_id'=>'required'
             // 'year' => 'required|integer|digits:4', // Ensures year is exactly 4 digits
             // 'month' => 'required|integer|between:1,12',
         ];
@@ -43,7 +43,7 @@ class RentRequest extends FormRequest
     public function messages()
     {
         return [
-            'room_id.unique' => 'Please choose a different room or update the existing rent.',
+            'rent_date.unique' => 'Please choose a different rent date or update the existing rent.',
         ];
     }
     

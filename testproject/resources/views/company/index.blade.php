@@ -1,149 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
+@section('content')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap Table with Actions</title>
-    <!-- Bootstrap CSS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap (optional) -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .table-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-    </style>
-</head>
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h2 class="admin-heading">All Companies</h2>
+            </div>
+            <div class="offset-md-6 col-md-2">
+                <a class="add-new" href="{{ route('company.store') }}">Add Company</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="message"></div>
+                <table class="content-table">
+                    <thead>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>View</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </thead>
+                    <tbody>
+                        @forelse ($companies as $company)
+                        <tr>
+                            <td> {{$company->id}}</td>
+                            <td>{{$company->name}}</td>
+                            <td class="view">
+                                <a href="{{route('company.show', $company->id)}}" class="btn btn-primary">View Properties</a>      
 
-<body>
+                            </td>
+                            <td class="edit">
+                                <a href="{{route('company.edit', $company->id)}}" class="btn btn-success">Edit</a>
+                            </td>
+                            <td class="delete">
+                                <button data-pid='{{$company->id}}' class="btn btn-danger delete-property">Delete</button>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="8">No User Found</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+                {{ $companies->links('vendor/pagination/bootstrap-4') }}
+                <div id="modal">
+                    <div id="modal-form">
+                        <table cellpadding="10px" width="100%">
 
-    <div class="container mt-5">
-        <h2>Company Management</h2>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Actions</th>
-                    
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                @foreach ($companies as $company)
-                <tr data-id="{{$company->id}}">
-                    <td> {{$company->id}}</td>
-                    <td>{{$company->name}}</td>
-                    <td>
-                        <div class="table-actions">
-                            <form id="delete-company" action="{{ route('company.destroy') }}" method="POST" style="display: none;">
-                                <input type="hidden" name="company-id" value="{{$company->id}}" id="company-id">
-                                @csrf
-                            </form>
-
-                            <form id="update-company" action="{{ route('company.update') }}" method="POST" style="display: none;">
-                                <input type="hidden" name="company-id" value="{{$company->id}}" id="company-id">
-                                @csrf
-                            </form>
-                            <button class="btn btn-success btn-sm" onclick="location.href='{{ route('company.show', $company->id)}}'">Properties Listing</button>
-                            <!-- <button class="btn btn-success btn-sm" onclick="location.href='{{ route('company.form') }}'"">Add</button> -->
-                            <button class="btn btn-primary btn-sm" onclick="updateCompany()" value="12">Update</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteCompany()" id='deleteBtn' value="12">Delete</button>
-                        </div>
-                    </td>
-                    @endforeach
-                </tr>
-
-                <!-- More rows as needed -->
-            </tbody>
-        </table>
+                        </table>
+                        <div id="close-btn">X</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Bootstrap JS and dependencies -->
-
-
-    <script>
-        function updateCompany(button) {
-            // const row = button.closest('tr');
-            // const name = row.cells[1].innerText;
-
-            // Simple prompt to update values, you can use a more complex form if needed
-            const newName = prompt('Update name:', name);
+</div>
 
 
-            if (newName !== '') {
-                var updateRoute = "{{route('company.update')}}";
-                var token = $('meta[name="csrf-token"]').attr('content');
+<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+<script type="text/javascript">
+    // $('#btnMe').on('click', function() {
+    //     alert('yes');
+    // })
 
+    $(".view-btn").on("click", function() {
+        var user_id = $(this).data("uid");
+        var token = $('meta[name="csrf-token"]').attr('content');
+        var ViewRoute = "{{route('user.show', ':id')}}"
+        ViewRoute = ViewRoute.replace(':id', user_id);
+        $.ajax({
+            url: ViewRoute,
+            data: {
+                _token: token
+            },
+            type: "post",
+            success: function(user) {
+                console.log(user);
+                form = "<tr><td>Username :</td><td><b>" + user['name'] + "</b></td></tr><tr><td>Email :</td><td><b>" + user['email'] + "</b></td></tr><tr><td>Location :</td><td><b>" + user['location'] + "</b></td></tr><tr><td>Phone :</td><td><b>" + user['phone_number'] + "</b></td></tr>";
+                console.log(form);
 
-                var itemId = '';
-
-                $('tr').on('click', function() {
-                    itemId = $(this).data('id');
-                    $.ajax({
-                        url: updateRoute,
-                        method: 'post',
-                        data: {
-                            _token: token,
-                            id: itemId,
-                            newName: newName
-                        },
-                        success: function() {
-
-                            setTimeout(
-                                location.reload(), 100
-                            )
-                        }
-                    });
-
-                });
-
-
+                $("#modal-form table").html(form);
+                $("#modal").show();
             }
+        });
+    });
+
+    $('#close-btn').on("click", function() {
+        $("#modal").hide();
+    });
+
+    $(".delete-property").on("click", function() {
+        if (confirm('Are you sure you want to delete this record?')) {
+            var p_id = $(this).data("pid");
+            var token = $('meta[name="csrf-token"]').attr('content');
+            var DeleteRoute = "{{route('property.destroy', ':id')}}"
+            DeleteRoute = DeleteRoute.replace(':id', p_id);
+            $.ajax({
+                url: DeleteRoute,
+                type: "POST",
+                data: {
+                    id: p_id,
+                    _token: token
+                },
+                success: function(data) {
+                    $(".message").html(data);
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 500);
+                }
+            });
         }
 
-
-        function deleteCompany(button) {
-            if (confirm('Are you sure you want to delete this record?')) {
-
-
-                // const row = button.closest('tr');
-                // row.remove();
-
-                var deleteRoute = "{{route('company.destroy')}}";
-                var token = $('meta[name="csrf-token"]').attr('content');
-
-                var itemId = '';
-
-                $('tr').on('click', function() {
-                    itemId = $(this).data('id');
-
-                    $.ajax({
-                        url: deleteRoute,
-                        method: 'post',
-                        data: {
-                            _token: token,
-                            id: itemId
-                        },
-                        success: function() {
-
-                            setTimeout(
-                                location.reload(), 100
-                            )
-                        }
-                    });
-
-                });
+    });
+</script>
 
 
-
-
-            }
-        }
-    </script>
-
-</body>
-
-</html>
+@endsection

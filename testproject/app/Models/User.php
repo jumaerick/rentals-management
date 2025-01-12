@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'role_id',
     ];
 
     /**
@@ -58,6 +59,10 @@ public function roomAssignment(){
 
 public function payment(){
     return $this->hasMany(Payment::class, 'user_id',);
+}
+
+public function role(){
+    return $this->hasOne(Role::class, 'id');
 }
 
 // public static function boot() {

@@ -6,6 +6,8 @@ use App\Models\Room;
 use App\Models\Company;
 use App\Models\Property;
 use App\Http\Requests\RoomRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller
@@ -16,13 +18,15 @@ class RoomController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function create()
-     {
-         //
-         $companies = Company::all();
-         $properties = Property::all();
-         return view('room.create')->with(['companies'=>$companies, 'properties'=>$properties]);
-     }
+    public function create()
+    {
+        //
+        $companies = Company::all();
+        $properties = Property::all();
+        return view('room.create')->with(['companies' => $companies, 'properties' => $properties]);
+    }
+
+
 
     public function index()
     {
@@ -31,11 +35,20 @@ class RoomController extends Controller
 
 
 
-        return view('room.index', 
-        [
-            'rooms'=> Room::paginate(5),
-            'property' =>'All Properties'
-        ]);
+        return view(
+            'room.index',
+            [
+                'rooms' => Room::paginate(5),
+                'property' => 'All Properties'
+            ]
+        );
+    }
+
+    public function edit($id)
+    {
+        //
+        $room = Room::where('id', $id)->first();
+        return view('room.edit')->with(['room' => $room]);
     }
 
     /**
@@ -58,9 +71,15 @@ class RoomController extends Controller
      * @param  \App\Models\Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function show(Room $room)
+    public function show(Request $request, $id)
     {
         //
+        $room = Room::join('properties', 'rooms.property_id', '=', 'properties.id')
+            ->select('properties.name', 'rooms.id', 'rooms.room_code')
+            ->where('rooms.id', $id)->first();
+        // dd($room);
+
+        return $room;
     }
 
     /**
@@ -70,9 +89,31 @@ class RoomController extends Controller
      * @param  \App\Models\Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Room $room)
+    public function update(Request $request, $id)
     {
         //
+
+        $data = $request->validate(
+            [
+                'property_id' => 'required',
+                'room_code' => 'required',
+            ]
+        );
+
+        $room = Room::where('id', $id)->first();
+
+        if ($room->room_code != $data['room_code']) {
+            $findRoom = Room::where('room_code', $data['room_code'])->where('property_id', $data['property_id'])->first();
+            if ($findRoom) {
+                return back()->withErrors([
+                    'room_code' => 'The room_code already exists',
+                ])->onlyInput('room_code');
+            }
+        }
+
+        $room->room_code = $data['room_code'];
+        $room->save();
+        return redirect()->route('room.index')->with('message', 'Details updated Successfully');
     }
 
     /**
@@ -81,8 +122,11 @@ class RoomController extends Controller
      * @param  \App\Models\Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Room $room)
+    public function destroy(Request $request)
     {
         //
+        // dd($request);
+        Room::find($request->id)->delete();
+        return redirect()->route('room.list');
     }
 }

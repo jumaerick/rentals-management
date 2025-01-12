@@ -1,72 +1,77 @@
-@include('layouts.app')
-
+@extends('layouts.app')
+@section('content')
 @if (Session::has('message'))
     <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
 @endif
 
-@php
-    
-@endphp
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h2 class="admin-heading">Create Room</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-md-3 col-md-6">
+                <form class="yourform" action="{{route('room.store')}}" method="post"
+                    autocomplete="off">
+                    @csrf
 
-<h1>Add Room</h1>
+                    <div class="form-group">
 
-<form action="{{ route('room.store') }}" method="post">
-    @csrf
+                        <label for="name"> Select Company</label>
+                        <select name="company_id" id="company_id" class="form-control" required>
+                            <option value="" selected disabled>Select Company</option>
+                            @foreach ($companies as $company)
+                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('company_id'))
+                        <span class="help-block text-danger">
+                            <strong>{{ $errors->first('company_id') }}</strong>
+                        </span>
+                        @endif
+                    </div>
 
-    <div class="form-group">
+                    <div class="form-group">
 
-        <label for="name"> Select Company</label>
-        <select name="company_id" id="company_id">
+                        <label for="name"> Select Property</label>
+                        <select name="property_id" id="property_id" class="form-control" required>
+                            <option value="" selected disabled>Select Property</option>
+                            @foreach ($properties as $property)
+                            <option value="{{ $property->property_id }}">{{ $property->name }}</option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('property_code'))
+                        <span class="help-block text-danger">
+                            <strong>{{ $errors->first('property_code') }}</strong>
+                        </span>
+                        @endif
+                    </div>
 
-            <option value="" selected disabled>Select Company</option>
-            @foreach ($companies as $company)
-                <option value="{{ $company->id }}">{{ $company->name }}</option>
-            @endforeach
-        </select>
-        @if ($errors->has('company_id'))
-            <span class="help-block text-danger">
-                <strong>{{ $errors->first('company_id') }}</strong>
-            </span>
-        @endif
+                    <div class="form-group">
+                        <label for="room_code">Room Code</label>
+                        <input type="text" name="room_code" id="room_code" value="{{ old('room_code') }}" class="form-control">
+                        @if ($errors->has('room_code'))
+                        <span class="help-block text-danger">
+                            <strong>{{ $errors->first('room_code') }}</strong>
+                        </span>
+                        @endif
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <input type="submit" name="save" class="btn btn-danger" value="Create">
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-
-        <label for="name"> Select Property</label>
-        <select name="property_id" id="property_id">
-
-            <option value="" selected disabled>Select Property</option>
-            @foreach ($properties as $property)
-                <option value="{{ $property->property_id }}">{{ $property->name }}</option>
-            @endforeach
-        </select>
-        @if ($errors->has('property_code'))
-            <span class="help-block text-danger">
-                <strong>{{ $errors->first('property_code') }}</strong>
-            </span>
-        @endif
-    </div>
-
-    <div class="form-group">
-        <label for="room_code">Room Code</label>
-        <input type="text" name="room_code" id="room_code" value="{{ old('room_code') }}" class="form-control">
-        @if ($errors->has('room_code'))
-            <span class="help-block text-danger">
-                <strong>{{ $errors->first('room_code') }}</strong>
-            </span>
-        @endif
-
-    </div>
-
-
-    <div class="form-group">
-        <button class="btn-success">Create</button>
-    </div>
-</form>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+<script type="text/javascript"></script>
 <script>
     $(document).ready(function() {
         $('#company_id').change(function() {
@@ -102,3 +107,5 @@
         });
     });
 </script>
+
+@endsection

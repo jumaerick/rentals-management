@@ -1,81 +1,88 @@
-@include('layouts.app')
-
+@extends('layouts.app')
+@section('content')
 @if (Session::has('message'))
-    <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+<p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
 @endif
 
-@php
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h2 class="admin-heading">New Assignment</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-md-3 col-md-6">
+                <form class='yourform' action="{{ route('roomAssignment.store') }}" method="post" autocomplete="off">
+                    @csrf
 
-@endphp
 
-<h1>New Room Assignment</h1>
+                    <div class="form-group">
 
-<form action="{{ route('roomAssignment.store') }}" method="post">
-    @csrf
+                        <label for="name"> Select Property</label>
+                        <select name="property_id" id="property_id" class="form-control">
+
+                            <option value="" selected disabled>Select Property</option>
+                            @foreach ($properties as $property)
+                            <option value="{{ $property->id }}">{{ $property->name }}</option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('property_id'))
+                        <span class="help-block text-danger">
+                            <strong>{{ $errors->first('property_id') }}</strong>
+                        </span>
+                        @endif
+                    </div>
 
 
-    <div class="form-group">
+                    <div class="form-group">
 
-        <label for="name"> Select Property</label>
-        <select name="property_id" id="property_id">
+                        <label for="room_code"> Select Room</label>
+                        <select name="room_id" id="room_id" class="form-control">
 
-            <option value="" selected disabled>Select Property</option>
-            @foreach ($properties as $property)
-                <option value="{{ $property->id }}">{{ $property->name }}</option>
-            @endforeach
-        </select>
-        @if ($errors->has('property_id'))
-            <span class="help-block text-danger">
-                <strong>{{ $errors->first('property_id') }}</strong>
-            </span>
-        @endif
+                            <option value="" selected disabled>Select Room</option>
+                            @foreach ($rooms as $room)
+                            <option value="{{ $room->id }}">{{ $room->room_code }}</option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('room_id'))
+                        <span class="help-block text-danger">
+                            <strong>{{ $errors->first('room_id') }}</strong>
+                        </span>
+                        @endif
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="user_id"> Select User</label>
+                        <select name="user_id" id="user_id" class="form-control">
+
+                            <option value="" selected disabled>Select User</option>
+                            @foreach ($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->email }}</option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('user_id'))
+                        <span class="help-block text-danger">
+                            <strong>{{ $errors->first('user_id') }}</strong>
+                        </span>
+                        @endif
+                    </div>
+
+
+
+
+                    <div class="form-group">
+                        <button class="btn-success">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
 
-
-    <div class="form-group">
-
-        <label for="room_code"> Select Room</label>
-        <select name="room_id" id="room_id">
-
-            <option value="" selected disabled>Select Room</option>
-            @foreach ($rooms as $room)
-                <option value="{{ $room->id }}">{{ $room->room_code }}</option>
-            @endforeach
-        </select>
-        @if ($errors->has('room_id'))
-            <span class="help-block text-danger">
-                <strong>{{ $errors->first('room_id') }}</strong>
-            </span>
-        @endif
-    </div>
-
-    <div class="form-group">
-
-        <label for="user_id"> Select User</label>
-        <select name="user_id" id="user_id">
-
-            <option value="" selected disabled>Select User</option>
-            @foreach ($users as $user)
-                <option value="{{ $user->id }}">{{ $user->email }}</option>
-            @endforeach
-        </select>
-        @if ($errors->has('user_id'))
-            <span class="help-block text-danger">
-                <strong>{{ $errors->first('user_id') }}</strong>
-            </span>
-        @endif
-    </div>
-
-
-
-
-    <div class="form-group">
-        <button class="btn-success">Create</button>
-    </div>
-</form>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+<script type="text/javascript"></script>
 
 <script>
     $(document).ready(function() {
@@ -120,7 +127,4 @@
 </script>
 
 
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
+@endsection

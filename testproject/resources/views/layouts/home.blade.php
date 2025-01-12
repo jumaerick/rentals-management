@@ -1,101 +1,52 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr">
+<link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}"> <!-- Bootstrap -->
+<link rel="stylesheet" href="{{ asset('css/style.css') }} "> <!-- Custom stlylesheet -->
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                    <use xlink:href="#bootstrap" />
+                </svg>
+            </a>
 
-<head>
-    <meta charset="utf-8">
-    <title>{{ config('app.name', 'Rentals Management System') }}</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}"> <!-- Bootstrap -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }} "> <!-- Custom stlylesheet -->
-</head>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">Companies</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">Properties</a></li>
+                <li><a href="{{route('contactUs')}}" class="nav-link px-2 text-white">Contacts</a></li>
+                <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+            </ul>
 
-<body>
-    
-    <!-- <div id="header">
-    
-        <div class="container">
-            <div class="row">
-                <div class="offset-md-4 col-md-4">
-                    <div class="logo">
-                        <a href="#"><img src="{{ asset('images/library.png') }}"></a>
-                    </div>
-                </div>
-                <div class="offset-md-2 col-md-2">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Hi {{ auth()->user()->name }}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="">Change Password</a>
-                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit()">Log Out</a>
-                        </div>
-                        <form method="post" id="logoutForm" action="{{ route('logout') }}">
-                            @csrf
-                        </form>
-                    </div>
-                </div>
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+            </form>
+
+            @auth
+            {{auth()->user()->name}}
+            <div class="text-end">
+                <a class="btn btn-outline-light me-2" href="#" onclick="document.getElementById('logoutForm').submit()">Log Out</a>
             </div>
-        </div>
-    </div>  -->
-    <div id="menubar">
-        <!-- Menu Bar -->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="menu">
-                        <li><a href="">Profile</a></li>
-                        <li><a href="{{route('user.index')}}">Users</a></li>
-                        <li><a href="">Rooms</a></li>
-                        <li><a href="">Room Assignments</a></li>
-                        <li><a href="">Payments</a></li>
-                        <li><a href="">Rents</a></li>
-                        <li><a href="">Reports</a></li>
-                        <li><a href="">Settings</a></li>
-                        <li>
-         
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Hi {{ auth()->user()->name }}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="">Change Password</a>
-                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit()">Log Out</a>
-                        </div>
-                        <form method="post" id="logoutForm" action="{{ route('logout') }}">
-                            @csrf
-                        </form>
-                    </div>
-           
-                        </li>
+            <form method="post" id="logoutForm" action="{{ route('logout') }}">
+                                    @csrf
+                                </form>
+            @endauth
 
-                    </ul>
-                </div>
+            @guest
+            <div class="text-end">
+                <a href="{{route('user.login.form')}}" class="btn btn-outline-light me-2">Login</a>
+                <a href="{{route('user.register.form')}}" class="btn btn-warning">Sign-up</a>
             </div>
+            @endguest
         </div>
-    </div> <!-- /Menu Bar -->
+    </div>
+</header>
 
-@yield('content')
-
-    <!-- FOOTER -->
-    <div id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <span>© Copyright {{ now()->format("Y") }} <a href="https://www.yahoobaba.net">Jumaae</a></span>
-                </div>
+<div class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <span>© Copyright {{ now()->format("Y") }} <a href="https://www.yahoobaba.net">Jumaae</a></span>
             </div>
         </div>
     </div>
-    <!-- /FOOTER -->
-    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('js/popper.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
-</body>
-
-</html>
+</div>

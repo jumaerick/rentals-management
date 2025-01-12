@@ -1,8 +1,5 @@
 @extends('layouts.guest')
 @section('content')
-
-<row id='background'>help</row>
-
-
+<p>we are going to</p>
 
 @endsection

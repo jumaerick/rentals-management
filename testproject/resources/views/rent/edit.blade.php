@@ -1,47 +1,24 @@
 @extends('layouts.app')
 @section('content')
-@if (Session::has('message'))
-<p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-@endif
-
 <div id="admin-content">
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <h2 class="admin-heading">Add Payment</h2>
+                <h2 class="admin-heading">Update rent</h2>
             </div>
         </div>
         <div class="row">
             <div class="offset-md-3 col-md-6">
-                <form class="yourform" action="{{route('payment.store')}}" method="post"
+                <form class="yourform" action="{{ route('rent.update', $rents->id) }}" method="post"
                     autocomplete="off">
                     @csrf
-
                     <div class="form-group">
-
-                        <label for="name"> Select company</label>
-                        <select name="company_id" id="company_id" class="form-control" required>
-
-                            <option value="" selected disabled>Select Company</option>
-                            @foreach ($companies as $company)
-                            <option value="{{ $company->id }}">{{ $company->name }}</option>
-                            @endforeach
-                        </select>
-                        @if ($errors->has('company_id'))
-                        <span class="help-block text-danger">
-                            <strong>{{ $errors->first('company_id') }}</strong>
-                        </span>
-                        @endif
-                        </div>
-
-                    <div class="form-group">
-
                         <label for="name"> Select Property</label>
                         <select name="property_id" id="property_id" class="form-control" required>
-
                             <option value="" selected disabled>Select Property</option>
                             @foreach ($properties as $property)
-                            <option value="{{ $property->id }}">{{ $property->name }}</option>
+
+                            <option value="{{ $property->id }}" {{($property->id == $rents->room->property_id) ? 'selected' : ''}}>{{ $property->name }}</option>
                             @endforeach
                         </select>
                         @if ($errors->has('property_id'))
@@ -59,7 +36,7 @@
 
                             <option value="" selected disabled>Select Room</option>
                             @foreach ($rooms as $room)
-                            <option value="{{ $room->id }}">{{ $room->room_code }}</option>
+                            <option value="{{ $room->id }}" {{($room->id ==$rents->room->id) ? 'selected' : ''}}>{{ $room->room_code }}</option>
                             @endforeach
                         </select>
                         @if ($errors->has('room_id'))
@@ -70,26 +47,8 @@
                     </div>
 
                     <div class="form-group">
-
-                        <label for="user_id"> Select User</label>
-                        <select name="user_id" id="user_id" class="form-control" required>
-
-                            <option value="" selected disabled>Select User</option>
-                            @foreach ($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->email }}</option>
-                            @endforeach
-                        </select>
-                        @if ($errors->has('user_id'))
-                        <span class="help-block text-danger">
-                            <strong>{{ $errors->first('user_id') }}</strong>
-                        </span>
-                        @endif
-                    </div>
-
-
-                    <div class="form-group">
                         <label for="amount">Amount</label>
-                        <input type="text" name="amount" id="amount" value="{{ old('amount') }}" class="form-control">
+                        <input type="text" name="amount" id="amount" value="{{$rents->amount }}" class="form-control" required>
                         @if ($errors->has('amount'))
                         <span class="help-block text-danger">
                             <strong>{{ $errors->first('amount') }}</strong>
@@ -99,25 +58,46 @@
                     </div>
 
 
+                    <div class="form-group">
+                        <label for="amount">Deposit</label>
+                        <input type="text" name="deposit" id="deposit" value="{{$rents->deposit }}" class="form-control" required>
+                        @if ($errors->has('deposit'))
+                        <span class="help-block text-danger">
+                            <strong>{{ $errors->first('deposit') }}</strong>
+                        </span>
+                        @endif
 
+                    </div>
 
                     <div class="form-group">
-                        <input type="submit" name="create" class="btn btn-success" value="Create">
+                        <label for="rent_date">Rent Date</label>
+                        <input type="date" name="rent_date" id="rent_date" value="{{$rents->rent_date }}" class="form-control" required>
+                        @if ($errors->has('rent_date'))
+                        <span class="help-block text-danger">
+                            <strong>{{ $errors->first('rent_date') }}</strong>
+                        </span>
+                        @endif
+
                     </div>
+
+                    <input type="submit" name="save" class="btn btn-danger" value="Update">
+                    <!-- <input type='hidden' name='property_id' value='{{$rents->room->property->property_id}}'> -->
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
-<script type="text/javascript"></script>
+@push('scripts')
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#company_id').change(function() {
             var company = $('#company_id').val();
             var updateRoute = "{{ route('company.properties', ':id') }}";
             updateRoute = updateRoute.replace(':id', company);
+
 
             $.ajax({
                 url: updateRoute,
@@ -137,7 +117,9 @@
                             $('select[name="property_id"]').append(
                                 '<option value="' + property.id + '">' + property.name +
                                 '</option>');
+
                         });
+
                     } else {
                         $('#property_id').empty();
                     }
@@ -147,15 +129,16 @@
 
         $('#property_id').change(function() {
             var property = $('#property_id').val();
-            var updateRoute = "{{ route('payment.rooms', ':id') }}";
+            var updateRoute = "{{ route('property.rooms', ':id') }}";
             updateRoute = updateRoute.replace(':id', property);
+
 
             $.ajax({
                 url: updateRoute,
                 type: "GET",
                 data: {
-                    "id": property,
-                    "_token": "{{ csrf_token() }}"
+                    "_token": "{{ csrf_token() }}",
+                    "id": property
                 },
                 dataType: "json",
                 success: function(data) {
@@ -166,10 +149,13 @@
                             '<option hidden>Select Room</option>');
 
                         $.each(data, function(key, room) {
+
                             $('select[name="room_id"]').append(
                                 '<option value="' + room.id + '">' + room.room_code +
                                 '</option>');
+
                         });
+
                     } else {
                         $('#room_id').empty();
                     }
@@ -177,7 +163,11 @@
             });
         });
 
+
+
+
     });
 </script>
 
+@endpush
 @endsection

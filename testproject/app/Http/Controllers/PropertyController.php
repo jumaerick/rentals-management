@@ -18,15 +18,17 @@ class PropertyController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function create()
-     {
-         //
-         $companies = Company::all();
-         return view('property.create')->with(['companies'=>$companies]);
-     }
+    public function create()
+    {
+        //
+        $companies = Company::all();
+        return view('property.create')->with(['companies' => $companies]);
+    }
 
 
-     public function rooms(Request $request){
+    public function rooms(Request $request)
+    {
+
         $rooms = Room::where('property_id', $request->id)->whereNotIn('id', RoomAssignment::where('status', 1)->pluck('room_id')->toArray())->get();
 
         // $rooms = Property::find($id)->room;
@@ -38,24 +40,25 @@ class PropertyController extends Controller
         // }
 
         return response()->json($rooms);
-     }
+    }
 
 
-     public function edit(Property $property)
-     {
-         //
-         $companies = Company::all();
-         return view('property.edit')->with(['property' =>$property, 'companies' =>$companies]);
-     }
+    public function edit($id)
+    {
+        //
+        $property = Property::where('id', $id)->first();
+        $companies = Company::all();
+        return view('property.edit')->with(['property' => $property, 'companies' => $companies, 'cid' => $property->company_id]);
+    }
 
     public function index()
     {
         //
         return view('property.index', [
             'properties' => Property::Paginate(5),
-            'company' =>'All Companies'
+            'company' => 'All Companies'
         ]);
-        
+
 
         // return view('property.index')->with(['properties'=>$properties, 'company' =>'All Companies']);
     }
@@ -66,10 +69,18 @@ class PropertyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PropertyRequest $request)
+    public function store(Request $request)
     {
         //
-        Property::create($request->validated());
+
+        $data = $request->validate ([
+            'name'=>'required|min:5',
+            'location' =>'required',
+            'property_code'=>'required|unique:properties',
+            'company_id' =>'required',
+        ]);
+
+        Property::create($data);
         return back()->with('message', 'Property added successfully');
     }
 
@@ -87,10 +98,13 @@ class PropertyController extends Controller
 
         $rooms  = Room::where('property_id', $property->id)->paginate(5);
 
-        return view('room.index', 
-        [
-            'rooms'=>$rooms, 
-            'property'=>$property->name]);
+        return view(
+            'room.index',
+            [
+                'rooms' => $rooms,
+                'property' => $property->name
+            ]
+        );
 
         // return view('room.index')->with(['rooms'=>$rooms, 'property'=>$property->name]);
 
@@ -103,9 +117,39 @@ class PropertyController extends Controller
      * @param  \App\Models\Property  $property
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Property $property)
+    public function update(Request $request, $id)
     {
         //
+
+
+        $data = $request->validate(
+            [
+                'name' => 'required',
+                'company_id' => 'required',
+                'property_code' => 'required',
+                'location' => 'required',
+
+            ]
+        );
+        $property = Property::where('id', $id)->first();
+
+        if ($property->property_code != $data['property_code']) {
+            $findProperty = Property::where('property_code', $data['property_code'])->first();
+
+            if ($findProperty) {
+                return back()->withErrors([
+                    'property_code' => 'This property_code has already been taken.',
+                ])->onlyInput('email');
+            }
+        }
+
+        $property->name = $data['name'];
+        $property->property_code = $data['property_code'];
+        $property->company_id = $data['company_id'];
+        $property->location = $data['location'];
+
+        $property->save();
+        return redirect()->route('property.index')->with('message', 'Details updated Successfully');
     }
 
     /**
@@ -114,8 +158,10 @@ class PropertyController extends Controller
      * @param  \App\Models\Property  $property
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Property $property)
+    public function destroy(Request $request)
     {
         //
+        Property::find($request->id)->delete();
+        return redirect()->route('property.list');
     }
 }

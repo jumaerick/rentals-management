@@ -8,7 +8,7 @@
                 <h2 class="admin-heading">All Properties</h2>
             </div>
             <div class="offset-md-6 col-md-2">
-                <a class="add-new" href="{{ route('user.create') }}">Add Property</a>
+                <a class="add-new" href="{{ route('property.create') }}">Add Property</a>
             </div>
         </div>
         <div class="row">
@@ -41,7 +41,7 @@
                                 <a href="{{route('property.edit', $property->id)}}" class="btn btn-success">Edit</a>
                             </td>
                             <td class="delete">
-                                <button data-uid='' class="btn btn-danger delete-student">Delete</button>
+                                <button data-pid='{{$property->id}}' class="btn btn-danger delete-property">Delete</button>
                             </td>
                         </tr>
                         @empty
@@ -98,17 +98,17 @@
         $("#modal").hide();
     });
 
-    $(".delete-student").on("click", function() {
+    $(".delete-property").on("click", function() {
         if (confirm('Are you sure you want to delete this record?')) {
-            var u_id = $(this).data("uid");
+            var p_id = $(this).data("pid");
             var token = $('meta[name="csrf-token"]').attr('content');
-            var DeleteRoute = "{{route('user.destroy', ':id')}}"
-            DeleteRoute = DeleteRoute.replace(':id', u_id);
+            var DeleteRoute = "{{route('property.destroy', ':id')}}"
+            DeleteRoute = DeleteRoute.replace(':id', p_id);
             $.ajax({
                 url: DeleteRoute,
                 type: "POST",
                 data: {
-                    id: u_id,
+                    id: p_id,
                     _token: token
                 },
                 success: function(data) {

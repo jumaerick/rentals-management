@@ -1,14 +1,15 @@
 @extends('layouts.app')
 @section('content')
 
-    <div id="admin-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <h2 class="admin-heading">Dashboard</h2>
-                </div>
+<div id="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h2 class="admin-heading">Dashboard</h2>
             </div>
-            <div class="row">
+        </div>
+        <div class="row">
+            <a href="{{route('company.index')}}">
                 <div class="col-md-3 mb-4">
                     <div class="card" style="width: 14rem; margin: 0 auto;">
                         <div class="card-body text-center">
@@ -17,6 +18,9 @@
                         </div>
                     </div>
                 </div>
+            </a>
+
+            <a href="{{route('property.index')}}">
                 <div class="col-md-3">
                     <div class="card" style="width: 14rem; margin: 0 auto;">
                         <div class="card-body text-center">
@@ -25,6 +29,10 @@
                         </div>
                     </div>
                 </div>
+
+            </a>
+
+            <a href="{{route('room.index')}}">
                 <div class="col-md-3">
                     <div class="card" style="width: 14rem; margin: 0 auto;">
                         <div class="card-body text-center">
@@ -33,6 +41,10 @@
                         </div>
                     </div>
                 </div>
+
+            </a>
+
+            <a href="{{route('roomAssignment.index')}}">
                 <div class="col-md-3">
                     <div class="card" style="width: 14rem; margin: 0 auto;">
                         <div class="card-body text-center">
@@ -42,6 +54,9 @@
                     </div>
                 </div>
 
+            </a>
+
+            <a href="{{route('roomAssignment.index')}}">
                 <div class="col-md-3">
                     <div class="card" style="width: 14rem; margin: 0 auto;">
                         <div class="card-body text-center">
@@ -50,6 +65,10 @@
                         </div>
                     </div>
                 </div>
+
+            </a>
+
+            <a href="{{route('user.index')}}">
                 <div class="col-md-3">
                     <div class="card" style="width: 14rem; margin: 0 auto;">
                         <div class="card-body text-center">
@@ -58,7 +77,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+
+            </a>
+
         </div>
-    </div>
+
+</div>
 @endsection

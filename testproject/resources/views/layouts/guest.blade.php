@@ -10,10 +10,11 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <!-- Custom stlylesheet -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/chat.css') }}">
 </head>
 
 <body>
-    @yield('content')
+    @include('layouts.partials.navbar')
 </body>
 
 </html>

@@ -15,6 +15,9 @@ use App\Http\Controllers\RoomAssignmentController;
 use App\Http\Controllers\RentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AboutUsController;
+use App\Http\Controllers\ContactUsController;
+use App\Models\Payment;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +41,8 @@ Route::get('/', function () {
 });
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/aboutUs', [AboutUsController::class, 'index'])->name('aboutUs');
+Route::get('/contactUs', [ContactUsController::class, 'index'])->name('contactUs');
 
 Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('/register', [RegisterController::class, 'show'])->name('register.form');
@@ -86,24 +91,27 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 Route::post('/logout', [LogoutController::class, 'logout'])->middleware('auth')->name('logout');
 
+Route::middleware('auth')->group(function () {
+
 Route::group(['prefix' => 'company', 'as' => 'company.'], function () {
     Route::get('/create', [CompanyController::class, 'create'])->name('form');
     Route::post('/create', [CompanyController::class, 'store'])->name('store');
-    Route::get('/index', [CompanyController::class, 'index'])->name('list');
+    Route::get('/index', [CompanyController::class, 'index'])->name('index');
     Route::post('/delete', [CompanyController::class, 'destroy'])->name('destroy');
     Route::post('/update', [CompanyController::class, 'update'])->name('update');
     Route::get('/{company}', [CompanyController::class, 'show'])->name('show');
+    Route::get('/edit/{id}', [CompanyController::class, 'edit'])->name('edit');
     Route::get('/properties/{company}', [CompanyController::class, 'properties'])->name('properties');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
 
 Route::group(['prefix' => 'property', 'as' => 'property.'], function () {
-    Route::get('/create', [PropertyController::class, 'create'])->name('form');
+    Route::get('/create', [PropertyController::class, 'create'])->name('create');
     Route::post('/create', [PropertyController::class, 'store'])->name('store');
     Route::get('/index', [PropertyController::class, 'index'])->name('index');
     Route::post('/delete', [PropertyController::class, 'destroy'])->name('destroy');
     Route::get('/{property}', [PropertyController::class, 'show'])->name('show');
-    Route::post('/update', [PropertyController::class, 'update'])->name('update');
+    Route::post('/update/{id}', [PropertyController::class, 'update'])->name('update');
     Route::get('/edit/{id}', [PropertyController::class, 'edit'])->name('edit');
     Route::get('/rooms/{property}', [PropertyController::class, 'rooms'])->name('rooms');
     
@@ -115,7 +123,9 @@ Route::group(['prefix' => 'room', 'as' => 'room.'], function () {
     Route::post('/create', [RoomController::class, 'store'])->name('store');
     Route::get('/index', [RoomController::class, 'index'])->name('index');
     Route::post('/delete', [RoomController::class, 'destroy'])->name('destroy');
-    Route::post('/update', [RoomController::class, 'update'])->name('update');
+    Route::post('/update/{id}', [RoomController::class, 'update'])->name('update');
+    Route::post('/{room}', [RoomController::class, 'show'])->name('show');
+    Route::get('/edit/{id}', [RoomController::class, 'edit'])->name('edit');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
 
@@ -123,10 +133,13 @@ Route::group(['prefix' => 'room', 'as' => 'room.'], function () {
 Route::group(['prefix' => 'rent', 'as' => 'rent.'], function () {
     Route::get('/create', [RentController::class, 'create'])->name('form');
     Route::post('/create', [RentController::class, 'store'])->name('store');
-    Route::get('/index', [RentController::class, 'index'])->name('list');
+    Route::get('/index', [RentController::class, 'index'])->name('index');
     Route::post('/delete', [RentController::class, 'destroy'])->name('destroy');
-    Route::post('/update', [RentController::class, 'update'])->name('update');
+    Route::post('/update/{id}', [RentController::class, 'update'])->name('update');
     Route::get('/listing', [RentController::class, 'rentListing'])->name('rentListing');
+    Route::post('/{rent}', [RentController::class, 'show'])->name('show');
+    Route::post('/show/{id}', [RentController::class, 'deposit'])->name('deposit');
+    Route::get('/edit/{id}', [RentController::class, 'edit'])->name('edit');
 
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
@@ -134,24 +147,28 @@ Route::group(['prefix' => 'rent', 'as' => 'rent.'], function () {
 Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
     Route::get('/create', [PaymentController::class, 'create'])->name('form');
     Route::post('/create', [PaymentController::class, 'store'])->name('store');
-    Route::get('/index', [PaymentController::class, 'index'])->name('list');
+    Route::get('/index', [PaymentController::class, 'index'])->name('index');
     Route::post('/delete', [PaymentController::class, 'destroy'])->name('destroy');
-    Route::post('/update', [PaymentController::class, 'update'])->name('update');
+    Route::post('/update/{id}', [PaymentController::class, 'update'])->name('update');
+    Route::get('/edit/{id}', [PaymentController::class, 'edit'])->name('edit');
+    Route::get('/rooms/{property}', [PaymentController::class, 'rooms'])->name('rooms');
     // Route::post('/login', [CompanyController::class, 'login'])->name('login');
 });
 
-Route::group(['prefix' => 'roomAssignment', 'as' => 'roomAssignment.'], function () {
-    Route::get('/create', [RoomAssignmentController::class, 'create'])->name('form');
-    Route::post('/create', [RoomAssignmentController::class, 'store'])->name('store');
-    Route::get('/index', [RoomAssignmentController::class, 'index'])->name('list');
-    Route::post('/post', [RoomAssignmentController::class, 'changeStatus'])->name('changeStatus');
-    Route::post('/delete', [RoomAssignmentController::class, 'destroy'])->name('destroy');
-    Route::post('/update', [RoomAssignmentController::class, 'update'])->name('update');
-    // Route::post('/login', [CompanyController::class, 'login'])->name('login');
-});
 
-Route::middleware('auth')->group(function () {
+
+
     Route::get('/dashboard', [dashboardController::class, 'index'])->name('dashboard');
+    Route::group(['prefix' => 'roomAssignment', 'as' => 'roomAssignment.'], function () {
+        Route::get('/create', [RoomAssignmentController::class, 'create'])->name('form');
+        Route::post('/create', [RoomAssignmentController::class, 'store'])->name('store');
+        Route::get('/index', [RoomAssignmentController::class, 'index'])->name('index');
+        Route::post('/post', [RoomAssignmentController::class, 'changeStatus'])->name('changeStatus');
+        Route::post('/delete', [RoomAssignmentController::class, 'destroy'])->name('destroy');
+        Route::post('/update', [RoomAssignmentController::class, 'update'])->name('update');
+        Route::get('/edit/{id}', [RoomAssignmentController::class, 'edit'])->name('edit');
+        // Route::post('/login', [CompanyController::class, 'login'])->name('login');
+    });
 });
 
 

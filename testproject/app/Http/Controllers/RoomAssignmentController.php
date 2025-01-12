@@ -9,7 +9,9 @@ use App\Models\User;
 use App\Models\Rent;
 use App\Models\Payment;
 use App\Http\Requests\RoomAssignmentRequest;
+use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use DB;
 
 class RoomAssignmentController extends Controller
@@ -26,21 +28,61 @@ class RoomAssignmentController extends Controller
         $properties = Property::all();
         $rooms = Room::whereNotIn('id', RoomAssignment::where('status', 1)->pluck('room_id')->toArray())->get();
         $users = User::all();
-        return view('roomAssignment.create')->with(['properties' => $properties, 'rooms' => $rooms, 'users' => $users]);
+        $companies = Company::all();
+        return view('roomAssignment.create')->with([
+            'properties' => $properties,
+            'rooms' => $rooms,
+            'users' => $users,
+            'companies' => $companies
+        ]);
     }
 
     public function index()
     {
-        
 
-        $records = RoomAssignment::select('user_id', 'room_id','status')->distinct()->get();
+
+        $records = RoomAssignment::select('id', 'user_id', 'room_id', 'status', 'updated_at')->distinct()->get();
+
+        foreach($records as $rec){
+            $payments = array_sum(Payment::where('user_id', $rec->user_id)->where('room_id', $rec->room_id)->pluck('amount')->toArray());
+            $deposit = Rent::where('room_id', $rec->room_id)->first();
+            $amount = Rent::where('room_id', $rec->room_id)->first();
+            $deposit = $deposit->deposit ?? 0;
+            $amount = $amount->amount ?? 0;
+            $rec->append('payment_status');
+            $now =date_create(Carbon::now()->toDateTimeString());
+            $end = $rec->updated_at;
+            $interval = date_diff($now, $end);
+            $months = $interval ->format('%m') + 1;
+            $totalTodate = (($amount*$months)+$deposit);
+            $bal = $payments - $totalTodate;
+            $status = '';
+
+            if ($bal > 0){
+                $status = 'Overpaid';
+            }
+            elseif($bal < 0){
+                $status = 'Pending';
+            }
+
+            elseif(($bal == 0) && ($deposit==0 || $amount)){
+                $status = 'Inactive';
+            }  
+            else {
+                $status = 'Cleared';
+            }
+            $rec->payment_status = $status;
+
+
+        }
+
 
         $records = $records->map(function ($record) {
             $totalAmount = Payment::where('user_id', $record->user_id)
                 ->where('room_id', $record->room_id)
                 ->pluck('amount')
                 ->sum();
-                
+
             // Add the total amount to the record
             // dd($record->room->property->name);
             $record->amount = $totalAmount;
@@ -48,37 +90,37 @@ class RoomAssignmentController extends Controller
             $record->room_code = $record->room->room_code;
             $record->name = $record->room->property->name;
 
-        
+
             return $record;
         });
 
 
-// Get the total payments for all records in one query
-// $paymentTotals = Payment::select('user_id', 'room_id', DB::raw('SUM(amount) as total_amount'))
-//     ->groupBy('user_id', 'room_id')
-//     ->get()
-//     ->mapWithKeys(function ($item) {
-//         // Create a unique key based on user_id and room_id
-//         $key = $item->user_id . '-' . $item->room_id;
-//         // Map the key to the total_amount
-//         return [$key => $item->total_amount];
-//     });
+        // Get the total payments for all records in one query
+        // $paymentTotals = Payment::select('user_id', 'room_id', DB::raw('SUM(amount) as total_amount'))
+        //     ->groupBy('user_id', 'room_id')
+        //     ->get()
+        //     ->mapWithKeys(function ($item) {
+        //         // Create a unique key based on user_id and room_id
+        //         $key = $item->user_id . '-' . $item->room_id;
+        //         // Map the key to the total_amount
+        //         return [$key => $item->total_amount];
+        //     });
 
-// // Map the totals to the records
-// $records = RoomAssignment::with(['user', 'room.property'])
-//     ->select('user_id', 'room_id', 'status')
-//     ->distinct()
-//     ->get();
+        // // Map the totals to the records
+        // $records = RoomAssignment::with(['user', 'room.property'])
+        //     ->select('user_id', 'room_id', 'status')
+        //     ->distinct()
+        //     ->get();
 
-// // Map the totals to the records
-// $records = $records->map(function ($record) use ($paymentTotals) {
-//     $key = $record->user_id . '-' . $record->room_id;
-//     $record->amount = $paymentTotals[$key] ?? 0; // Default to 0 if no payments
-//     $record->email = $record->user->email;
-//     $record->room_code = $record->room->room_code;
-//     $record->name = $record->room->property->name;
-//     return $record;
-// });
+        // // Map the totals to the records
+        // $records = $records->map(function ($record) use ($paymentTotals) {
+        //     $key = $record->user_id . '-' . $record->room_id;
+        //     $record->amount = $paymentTotals[$key] ?? 0; // Default to 0 if no payments
+        //     $record->email = $record->user->email;
+        //     $record->room_code = $record->room->room_code;
+        //     $record->name = $record->room->property->name;
+        //     return $record;
+        // });
 
         return view('roomAssignment.index')->with(['roomAssignments' => $records]);
     }
@@ -102,13 +144,17 @@ class RoomAssignmentController extends Controller
     public function changeStatus(Request $request)
     {
         //
+        $now =date_create(Carbon::now()->toDateTimeString());
         $roomAssignment = RoomAssignment::find($request->id);
+        $end = $roomAssignment->updated_at;
+        $interval = date_diff($now, $end);
+        $months = $interval ->format('%m') + 1;
         $statuses = RoomAssignment::where('room_id', $roomAssignment->room_id)->pluck('status')->toArray();
 
         $payments = Payment::where('user_id', $roomAssignment->user->id)->where('room_id', $roomAssignment->room_id)->get();
         $totalPaid = array_sum($payments->pluck('amount')->toArray());
-        $deposit = array_sum(Rent::where('room_id', $roomAssignment->room_id)->pluck('deposit')->toArray());
-        $amount = array_sum(Rent::where('room_id', $roomAssignment->room_id)->pluck('amount')->toArray());
+        $deposit = Rent::where('room_id', $roomAssignment->room_id)->first()->deposit;
+        $amount = Rent::where('room_id', $roomAssignment->room_id)->first()->amount;
         $totalBilled = $deposit + $amount;
 
         if (($totalBilled > $totalPaid) &  ($roomAssignment->status == 0)) {
@@ -141,6 +187,19 @@ class RoomAssignmentController extends Controller
         //
     }
 
+    public function edit($id)
+    {
+        //
+        $properties = Property::all();
+        $rooms = Room::all();
+        $roomAssignment = RoomAssignment::where('id', $id)->first();
+        return view('roomAssignment.edit')->with([
+            'roomAssignment' => $roomAssignment,
+            'properties' => $properties,
+            'rooms' => $rooms
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -159,8 +218,11 @@ class RoomAssignmentController extends Controller
      * @param  \App\Models\RoomAssignment  $roomAssignment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RoomAssignment $roomAssignment)
+    public function destroy(Request $request)
     {
         //
+
+        RoomAssignment::find($request->id)->delete();
+        return response()->json(['status' => true]);
     }
 }

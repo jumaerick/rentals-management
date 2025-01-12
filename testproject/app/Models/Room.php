@@ -19,7 +19,7 @@ class Room extends Model
     }
 
     public function rent(){
-        return $this->hasOne(Rent::class);
+        return $this->hasMany(Rent::class);
     }
 
     public function payment(){
