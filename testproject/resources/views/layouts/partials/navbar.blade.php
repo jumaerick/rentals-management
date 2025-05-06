@@ -24,6 +24,9 @@
             <div class="text-end">
                 <a class="btn btn-outline-light me-2" href="#" onclick="document.getElementById('logoutForm').submit()">Log Out</a>
             </div>
+            <form method="post" id="logoutForm" action="{{ route('logout') }}">
+                                    @csrf
+                                </form>
             @endauth
 
             @guest

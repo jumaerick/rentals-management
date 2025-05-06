@@ -15,34 +15,6 @@
 
 <body>
 
-
-    <div id="header">
-
-        <!-- <div class="container">
-            <div class="row">
-                <div class="offset-md-4 col-md-4">
-                    <div class="logo">
-                        <a href="#"><img src="{{ asset('images/library.png') }}"></a>
-                    </div>
-                </div>
-                <div class="offset-md-2 col-md-2">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Hi {{ auth()->user()->name }}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="">Change Password</a>
-                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit()">Log Out</a>
-                        </div>
-                        <form method="post" id="logoutForm" action="{{ route('logout') }}">
-                            @csrf
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-    </div>
     <div id="menubar">
         <!-- Menu Bar -->
         <div class="container">
@@ -84,11 +56,9 @@
         </div>
     </div> <!-- /Menu Bar -->
 
-    
+
     @yield('content')
     @include('layouts.partials.chat')
-
-
 
     @stack('scripts')
 
@@ -103,7 +73,7 @@
         </div>
     </div>
     <!-- /FOOTER -->
-     <a href = 'https://nodejs-chat-fi0c.onrender.com/' style="visibility: hidden;"></a>
+    <a href='https://nodejs-chat-fi0c.onrender.com/' style="visibility: hidden;"></a>
     <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>

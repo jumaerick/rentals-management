@@ -1,7 +1,7 @@
 <div class="main">
-    <button class="chatbot-toggler">
-        <span><img src="https://img.icons8.com/?size=256&id=54385&format=png" alt=""></span>
-        <span><img src="https://img.icons8.com/?size=256&id=71200&format=png" alt=""></span>
+    <button class="chatbot-toggler">Ask AI
+        <!-- <span><img src="https://img.icons8.com/?size=256&id=54385&format=png" alt=""></span>
+        <span><img src="https://img.icons8.com/?size=256&id=71200&format=png" alt=""></span> -->
     </button>
     <div class="chatbot">
         <header>
