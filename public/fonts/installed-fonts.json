@@ -1,0 +1,14 @@
+{
+    "lato": {
+        "normal": "lato_normal_bb3e2ca7c8563a5bcddcc04456842d6b"
+    },
+    "lato-italic": {
+        "normal": "lato_italic_normal_669e058f08c53e5e9e9e089a6a53d4dd"
+    },
+    "lato-black": {
+        "normal": "lato_black_normal_e1626cbdae606c23f3e537aae621affe"
+    },
+    "poppins": {
+        "normal": "poppins_normal_a6cb02792852bfa2006c756cee290a95"
+    }
+}
