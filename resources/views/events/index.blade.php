@@ -5,7 +5,7 @@
 	@if(count($events) > 0)        
 		<ul>
 			@foreach($events as $event)
-				<li>{{ $event->getSummary() }} ({{ $event->getStart()->getDateTime() }})</li>
+				<li>{{$event->id}}{{ $event->getSummary() }} ({{ $event->getStart()->getDateTime() }})</li>
 			@endforeach
 		</ul>
 	@else
