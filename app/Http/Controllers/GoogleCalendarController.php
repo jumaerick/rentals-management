@@ -17,11 +17,19 @@ class GoogleCalendarController extends Controller {
 	}    
 	
 	public function handleGoogleCallback(Request $request)  {        
-		$this->googleService->authenticate($request->get('code'));        
+		$googleUser = $this->googleService->authenticate($request->get('code'));
+		// $user = auth()->user();
+		// dd($user);
+		// $user->google_access_token = $googleUser['access_token'];
+		// $user->google_refresh_token = $googleUser['refresh_token'] ?? $user->google_refresh_token;
+		// $user->google_token_expires_at = now()->addSeconds($googleUser['expires_in']);
+		// $user->save(); 
+		 session(['google_calendar_connected' => true]);    
 		return redirect('/events')->with('success', 'Google Calendar connected!');    
 	} 
 
     public function showEvents() {    
+// dd(session()->has('google_calendar_connected'));
 	$events = $this->googleService->listEvents();    
 	return view('events.index', compact('events')); 
     }
