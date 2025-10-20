@@ -3,8 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use A17\Twill\Facades\TwillNavigation;
-use A17\Twill\View\Components\Navigation\NavigationLink;
+use App\Helpers\AdminMenu;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,6 +13,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+        
     }
 
     /**
@@ -21,8 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        TwillNavigation::addLink(
-            NavigationLink::make()->forModule('platformMessages')
-        );
+        AdminMenu::register();
     }
 }

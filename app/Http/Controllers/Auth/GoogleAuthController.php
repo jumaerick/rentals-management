@@ -20,9 +20,9 @@ class GoogleAuthController extends Controller
 	}   
     //Redirect to google auth page
     public function redirect() {
+        
         session(['auth_flow' => 'sso']);
         return Socialite::driver('google')
-            // ->with(['state_name' => 'sso'])
             ->redirect();
     }
 
@@ -39,7 +39,7 @@ class GoogleAuthController extends Controller
 
     if ($flow == 'calendar') {
         return $this->handleGoogleCalendarCallback($request);
-    } elseif ($flow == 'sso') {
+    } else{
         return $this->callback($request);
     }
     // session('auth_flow')->forget();
@@ -54,7 +54,6 @@ class GoogleAuthController extends Controller
         try {
             // Get the user information from Google
             $user = Socialite::driver('google')->user();
-            // dd($user);
 
         } catch (Throwable $e) {
             return redirect('/')->with('error', 'Google authentication failed.');
@@ -74,7 +73,9 @@ class GoogleAuthController extends Controller
             ], [
                 'name' => $user->name,
                 'password' => bcrypt(Str::random(16)), // Set a random password
-                'email_verified_at' => now()
+                'email_verified_at' => now(),
+                'role'=>'LEANER',
+
             ]);
             session()->forget('auth_flow');
 

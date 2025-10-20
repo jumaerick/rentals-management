@@ -43,6 +43,7 @@ class GoogleCalendarController extends Controller
 
     public function showEvents() {    
         // dd(session()->has('google_calendar_connected'));
+        dd(auth()->user());
     if(!session()->has('google_calendar_connected')){
         return redirect()->route('auth.calendar.redirect');
     }

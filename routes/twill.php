@@ -7,5 +7,10 @@ use A17\Twill\Facades\TwillRoutes;
 
 TwillRoutes::module('platformMessages');
 TwillRoutes::module('platformUserMessages');
-TwillRoutes::module('sectors');
-TwillRoutes::module('sectors');
+// TwillRoutes::module('sectors');
+// TwillRoutes::module('sectors');
+TwillRoutes::module('domainExperiences');
+TwillRoutes::module('skillLevels');
+TwillRoutes::module('learninGoals');
+TwillRoutes::module('interests');
+TwillRoutes::module('courses');
