@@ -21,8 +21,11 @@ class CourseRepository extends ModuleRepository
 
      public function update(int|string $id, array $fields): TwillModelContract
     {
+
+        // dd('hapa');
         return DB::transaction(function () use ($id, $fields) {
             $model = $this->model->findOrFail($id);
+            // dd($fields);
 
             $original_fields = $fields;
 
@@ -34,15 +37,14 @@ class CourseRepository extends ModuleRepository
             $domainFieldIds = $fields['domain_experience_id'] ?? null;
             $skillFieldsIds = $fields['skill_level_id'] ?? null;
             $interestFieldsIds = $fields['interest_id'] ?? null;
-            $learningGoalFieldsIds = $fields['learning_goal_id'] ?? null;
-            // dd($fields);
+            $learningGoalFieldsIds = $fields['learnin_goal_id'] ?? null;
+            // dd($learningGoalFieldsIds);
 
             // Remove it from fields before fill/save
             unset($fields['domain_experience_id']);
             unset($fields['skill_level_id']);
             unset($fields['interest_id']);
-            unset($fields['learning_goal_id']);
-            // dd($fields);
+            unset($fields['learnin_goal_id']);
             // Fill and save base model
             $model->fill(Arr::except($fields, $this->getReservedFields()));
             $model->save();
@@ -58,6 +60,7 @@ class CourseRepository extends ModuleRepository
             }
 
             if (is_array($learningGoalFieldsIds)) {
+                // dd('hapa');
                 $model->learningGoalFields()->sync($learningGoalFieldsIds);
             }
 

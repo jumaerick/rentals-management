@@ -13,6 +13,11 @@ use App\Repositories\SkillLevelRepository;
 use App\Repositories\LearninGoalRepository;
 use App\Repositories\InterestRepository;
 use App\Models\Course;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use A17\Twill\Http\Controllers\Admin\ModuleController as BaseModuleController;
 
 class CourseController extends BaseModuleController
@@ -64,7 +69,7 @@ class CourseController extends BaseModuleController
     $selectedDomainIds = $courseMeta->pluck('domain_experience_id')->filter()->values()->toArray();
     $selectedSkillLevelIds = $courseMeta->pluck('skill_level_id')->filter()->values()->toArray();
     $selectedInterestIds = $courseMeta->pluck('interest_id')->filter()->values()->toArray();
-    $selectedLearningGoalIds = $courseMeta->pluck('learning_goal_id')->filter()->values()->toArray();
+    $selectedLearningGoalIds = $courseMeta->pluck('learnin_goal_id')->filter()->values()->toArray();
 
     // Get the full option lists for dropdowns (you likely want these)
     $domains = app(DomainExperienceRepository::class)->listAll();
@@ -95,5 +100,16 @@ class CourseController extends BaseModuleController
         );
 
         return $table;
+    }
+
+    public function coursesMetaDataUpdate(Request $request, int $id): RedirectResponse
+    {
+        $input = $request->all();
+
+        $this->repository->update($id, $input);
+
+        Session::flash('status', twillTrans('twill::lang.publisher.save-success'));
+
+        return redirect()->back();
     }
 }
