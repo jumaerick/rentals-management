@@ -26,3 +26,5 @@ Route::get('/events', [GoogleCalendarController::class, 'showEvents'])->name('ev
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
+
+Route::get('/recommendations', [HomeController::class, 'recommendation'])->middleware('auth')->name('recommendations');

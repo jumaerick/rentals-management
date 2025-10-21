@@ -57,7 +57,7 @@ class User extends TwillBaseUser
     {
         // dd(DomainExperience::all());
         // return $this->belongsToMany(DomainExperience::class);
-        return $this->belongsToMany(Interest::class, 'courses_metadata'); // pivot table name
+        return $this->belongsToMany(Interest::class, 'users_metadata'); // pivot table name
     }
 
     public function learningGoalFields()
@@ -69,7 +69,7 @@ class User extends TwillBaseUser
 
 
     public function userMetaData(){
-        return hasMany(UserMetaData::class);
+        return $this->hasMany(UserMetaData::class);
     }
 
 }
