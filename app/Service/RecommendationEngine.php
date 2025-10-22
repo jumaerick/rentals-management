@@ -53,8 +53,14 @@ class RecommendationEngine
         }
 
         // Sort by score descending
-        usort($recommendations, fn($a, $b) => $b['score'] <=> $a['score']);
 
+        usort($recommendations, fn($a, $b) => $b['score'] <=> $a['score']);
+        // Filter out recommendations with less than 2 reasons
+        $recommendations = array_filter($recommendations, function($recommendation) {
+            return count(explode(',', $recommendation['reasons'])) >= 2;
+        });
+
+        // dd($recommendations);
         return $recommendations;
     }
 }
