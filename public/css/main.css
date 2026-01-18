@@ -19,3 +19,56 @@
 .font-black {
   font-weight: 900;
 }
+
+.bg-black-100 {
+  --tw-bg-opacity: 1;
+  background-color:rgb(16 13 37 / var(--tw-bg-opacity));
+}
+
+.bg-tertiary {
+	--tw-bg-opacity: 1;
+	background-color: rgb(21 16 48 / var(--tw-bg-opacity));
+}
+
+.text-latte {
+	--tw-text-opacity: 1;
+	color: rgb(255 248 231 / var(--tw-text-opacity));
+}
+
+.violet-gradient {
+  background:#f6c453;
+  background:linear-gradient(-90deg,#fefbe9 0%,rgba(60,51,80,0) 100%);
+  background:-webkit-linear-gradient(-90deg,#fefbe9 0%,rgba(60,51,80,0) 100%)
+}
+
+.dot {
+  animation: float 1.5s ease-in-out infinite;
+}
+
+/* @keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(12px); }
+  100% { transform: translateY(0); }
+} */
+
+@keyframes float {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.green-pink-gradient {
+  background:"#00cea8";
+  background:linear-gradient(90.13deg,#00cea8 1.9%,#bf61ff 97.5%);
+  background:-webkit-linear-gradient(-90.13deg,#00cea8 1.9%,#bf61ff 97.5%)
+}
+
+.shadow-card {
+  --tw-shadow: 0px 35px 120px -15px #211e35;
+  --tw-shadow-colored: 0px 35px 120px -15px var(--tw-shadow-color);
+  box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)
+}

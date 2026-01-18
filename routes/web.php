@@ -8,3 +8,5 @@ use App\Http\Controllers\PageController;
 // });
 
 Route::get('/', [PageController::class, 'index']);
+
+Route::post('/enquiryStore', [PageController::class, 'enquiryStore'])->name('enquiry.store');
