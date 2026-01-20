@@ -5,8 +5,10 @@
             <div
                 style="position: relative; width: 100%; height: 100%; overflow: hidden; pointer-events: auto; touch-action: none;">
                 <div style="width: 100%; height: 100%;">
-                    <img src="/images/python.png" style="display: block; width: 112px; height: 112px;" width="112"
-                        height="112">
+                    <div class="animate-float">
+                    <img src="/images/python.png" class="w-28 h-28 object-contain">
+                    </div>
+
                 </div>
             </div>
             <p class="text-latte items-center flex flex-col">Python</p>
