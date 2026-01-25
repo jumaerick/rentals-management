@@ -19,6 +19,9 @@
 
         @include('includes.about')
 
+        {{-- work section --}}
+        @include('includes.work')
+
         {{-- Contact Sections --}}
         @include('includes.contact')
 
